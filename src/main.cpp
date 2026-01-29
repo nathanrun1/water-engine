@@ -1,36 +1,18 @@
 ﻿#include <iostream>
 
-#include "input.h"
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-
-void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
+#include "Renderer/renderer.h"
+#include "Backend/glfw_backend.h"
 
 int main() {
-    std::cout << "Hello" << std::endl;
-    glfwInit();
-    GLFWwindow* window = glfwCreateWindow(400, 400, "yo", nullptr, nullptr);
-    if (!window) {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
+    GLFW::setWindowWidth(800);
+    GLFW::setWindowWidth(600);
+    GLFW::init();
     
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+    Renderer::init();
     
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
+    while (!GLFW::windowShouldClose()) {
+        Renderer::renderMain();
+        GLFW::endFrame();
     }
-    
-    while (!glfwWindowShouldClose(window)) {
-        glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-    glfwTerminate();
+    GLFW::destroy();
 }

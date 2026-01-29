@@ -6,9 +6,13 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(deps/glfw)
 
 add_executable(waterengine src/main.cpp
-        include/input.h
-        src/input.cpp
-        deps/glad/src/glad.c)
+        src/Input/input.h
+        src/Input/input.cpp
+        deps/glad/src/glad.c
+        src/Backend/glfw_backend.cpp
+        src/Backend/glfw_backend.h
+        src/Renderer/renderer.h
+        src/Renderer/renderer.cpp)
 
-target_include_directories(waterengine PUBLIC include deps/glfw/include deps/glad/include)
+target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include)
 target_link_libraries(waterengine glfw ${GLFW_LIBRARIES})
