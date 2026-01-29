@@ -4,11 +4,6 @@
 #include <exception>
 
 namespace GLFW {
-    class glfwRuntimeError : public std::runtime_error {
-    public:
-        explicit glfwRuntimeError(const char* msg) : std::runtime_error(msg) {}
-    };
-    
     GLFWwindow* g_window;
     std::vector<FrameBufferSizeCallback> g_frameBufferSizeCallbacks;
     
@@ -26,7 +21,7 @@ namespace GLFW {
         g_window = glfwCreateWindow(g_windowWidth, g_windowHeight, "Water", nullptr, nullptr);
         if (!g_window) {
             glfwTerminate();
-            throw glfwRuntimeError{"Failed to create GLFW window!"};
+            throw glfwRuntimeError("Failed to create GLFW window!");
         }
         glfwMakeContextCurrent(g_window);
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
