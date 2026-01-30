@@ -1,6 +1,7 @@
 ﻿#include "renderer.h"
 
 #include "shader.h"
+#include "Texture2D.h"
 #include "vertex.h"
 #include "Backend/glfw_backend.h"
 
@@ -16,7 +17,10 @@ std::vector<unsigned int> indices = {
     2, 1, 3
 };
 
-void _frameBufferSizeCallback(GLFWwindow*, int, int);
+void _frameBufferSizeCallback(GLFWwindow* _, const int width, const int height) {
+    glViewport(0, 0, width, height);
+}
+
 void Renderer::init() {
     GLFW::addFrameBufferSizeCallback(_frameBufferSizeCallback);
 
@@ -24,7 +28,10 @@ void Renderer::init() {
         "res/shaders/basic.vert",
         "res/shaders/basic.frag"
     };
-    ShaderProgram shaderProgram{spInfo};
+    ShaderProgram program(spInfo);
+
+    Texture2D texContainer("res/textures/container.jpg", 0);
+    Texture2D texSmily("res/textures/awesomeface.png", 1);
 
     unsigned int VAO, VBO, EBO;
     glGenVertexArrays(1, &VAO);  // Generates vertex array object. This encodes bound VBOs and attribute configurations
@@ -46,16 +53,11 @@ void Renderer::init() {
     glEnableVertexAttribArray(0);  // Tell OpenGL shaders are allowed to use this attribute
     glEnableVertexAttribArray(1);
 
-    shaderProgram.use();
+    program.use();
 }
 
 void Renderer::renderMain() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)0);
-}
-
-
-void _frameBufferSizeCallback(GLFWwindow* _, const int width, const int height) {
-    glViewport(0, 0, width, height);
 }
