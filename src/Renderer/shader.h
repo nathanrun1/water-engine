@@ -4,9 +4,9 @@
 #include <stdexcept>
 
 /* Runtime error related to OpenGL shader program initialization */
-class shaderProgramRuntimeError : public std::runtime_error {
+class shaderProgramError : public std::runtime_error {
 public:
-    explicit shaderProgramRuntimeError(const std::string& msg) : std::runtime_error(msg) {}
+    explicit shaderProgramError(const std::string& msg) : std::runtime_error(msg) {}
 };
 
 struct ShaderProgramInfo {
@@ -23,6 +23,9 @@ public:
 
     /* Set this as the active shader program */
     void use();
+
+    /* Set the value of an integer uniform */
+    void setInt(const std::string& uniform, const int& value);
 private:
     unsigned int m_id;
 };

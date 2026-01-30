@@ -9,7 +9,7 @@
 const std::string parseShader(const std::string& filepath) {
     std::ifstream file(filepath);
     if (!file.is_open()) {
-        throw shaderProgramRuntimeError("Failed to open file: " + filepath);
+        throw shaderProgramError("Failed to open file: " + filepath);
     }
 
     std::stringstream buffer;
@@ -35,7 +35,7 @@ ShaderProgram::ShaderProgram(ShaderProgramInfo &info) {
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog.data());
-        throw shaderProgramRuntimeError("Failed to compile vertex shader at " + info.vertexPath + ". Info log below.\n" + infoLog);
+        throw shaderProgramError("Failed to compile vertex shader at " + info.vertexPath + ". Info log below.\n" + infoLog);
     }
 
     // Fragment shader
@@ -47,7 +47,7 @@ ShaderProgram::ShaderProgram(ShaderProgramInfo &info) {
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog.data());
-        throw shaderProgramRuntimeError("Failed to compile fragment shader at " + info.fragmentPath + ". Info log below.\n" + infoLog);
+        throw shaderProgramError("Failed to compile fragment shader at " + info.fragmentPath + ". Info log below.\n" + infoLog);
     }
 
     // Full program
@@ -59,7 +59,7 @@ ShaderProgram::ShaderProgram(ShaderProgramInfo &info) {
     glGetProgramiv(m_id, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(m_id, 512, NULL, infoLog.data());
-        throw shaderProgramRuntimeError("Shader program linking failed! Info log below.\n" + infoLog);
+        throw shaderProgramError("Shader program linking failed! Info log below.\n" + infoLog);
     }
 
     glDeleteShader(vertexShader);  // Delete now-obsolete shader objects
@@ -68,5 +68,9 @@ ShaderProgram::ShaderProgram(ShaderProgramInfo &info) {
 
 void ShaderProgram::use() {
     glUseProgram(m_id);
+}
+
+void ShaderProgram::setInt(const std::string &uniform, const int &value) {
+    glUniform1i(glGetUniformLocation(m_id, uniform.c_str()), value);
 }
 
