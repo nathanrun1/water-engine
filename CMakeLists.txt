@@ -9,12 +9,12 @@ add_executable(waterengine src/main.cpp
         src/Input/input.h
         src/Input/input.cpp
         deps/glad/src/glad.c
-        src/Backend/glfw_backend.cpp
-        src/Backend/glfw_backend.h
+        src/Backend/GLFW.cpp
+        src/Backend/GLFW.h
         src/Renderer/renderer.h
         src/Renderer/renderer.cpp
-        src/Renderer/shader.h
-        src/Renderer/shader.cpp
+        src/Renderer/ShaderProgram.h
+        src/Renderer/ShaderProgram.cpp
         src/Renderer/vertex.h
         deps/stb/stb_image.h
         src/Renderer/Texture2D.h

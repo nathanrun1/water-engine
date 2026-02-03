@@ -21,6 +21,7 @@ GLint _getTextureFormat(int nChannels) {
 
 Texture2D::Texture2D(const std::string& texturePath, const unsigned int textureUnit) : m_unit{textureUnit} {
     int width, height, nChannels;
+    stbi_set_flip_vertically_on_load(1);
     std::byte* data = reinterpret_cast<std::byte*>(stbi_load(texturePath.c_str(), &width, &height, &nChannels, 0));
     if (!data) {
         stbi_image_free(data);

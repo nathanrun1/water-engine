@@ -1,5 +1,5 @@
-﻿#ifndef WATERENGINE_TEXTURE_H
-#define WATERENGINE_TEXTURE_H
+﻿#ifndef WATERENGINE_TEXTURE2D_H
+#define WATERENGINE_TEXTURE2D_H
 
 #include "glad/glad.h"
 
@@ -25,4 +25,4 @@ private:
     unsigned int m_unit;
 };
 
-#endif //WATERENGINE_TEXTURE_H
+#endif //WATERENGINE_TEXTURE2D_H

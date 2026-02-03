@@ -1,5 +1,5 @@
-﻿#ifndef WATERENGINE_BACKEND_H
-#define WATERENGINE_BACKEND_H
+﻿#ifndef WATERENGINE_GLFW_H
+#define WATERENGINE_GLFW_H
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -41,4 +41,4 @@ namespace GLFW {
     void addFrameBufferSizeCallback(const FrameBufferSizeCallback &callback);
 }
 
-#endif //WATERENGINE_BACKEND_H
+#endif //WATERENGINE_GLFW_H
