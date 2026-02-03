@@ -1,7 +1,10 @@
-﻿#ifndef WATERENGINE_SHADER_H
-#define WATERENGINE_SHADER_H
+﻿#ifndef WATERENGINE_SHADERPROGRAM_H
+#define WATERENGINE_SHADERPROGRAM_H
 #include <string>
 #include <stdexcept>
+
+#include "glad/glad.h"
+#include "glm/glm.hpp"
 
 /* Runtime error related to OpenGL shader program initialization */
 class shaderProgramError : public std::runtime_error {
@@ -19,15 +22,21 @@ struct ShaderProgramInfo {
 /* Encapulates an OpenGL shader program */
 class ShaderProgram {
 public:
-    ShaderProgram(ShaderProgramInfo& info);
+    ShaderProgram(const ShaderProgramInfo& info);
 
     /* Set this as the active shader program */
     void use();
 
-    /* Set the value of an integer uniform */
+    /* Set the value of an integer uniform. Program must be currently in use. */
     void setInt(const std::string& uniform, const int& value);
+
+    /* Set the value of a 4x4 matrix uniform. Program must be currently in use. */
+    void setMat4(const std::string& uniform, const glm::mat4& value, const GLboolean transpose = GL_FALSE);
+
+    /* Retrieve the shader program's id */
+    unsigned int getId();
 private:
     unsigned int m_id;
 };
 
-#endif //WATERENGINE_SHADER_H
+#endif //WATERENGINE_SHADERPROGRAM_H

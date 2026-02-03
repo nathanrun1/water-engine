@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 
-#include "Renderer/renderer.h"
-#include "Backend/glfw_backend.h"
+#include "Renderer/Renderer.h"
+#include "Backend/GLFW.h"
 
 int main() {
     GLFW::setWindowWidth(800);

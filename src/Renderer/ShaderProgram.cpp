@@ -1,10 +1,12 @@
-﻿#include "shader.h"
+﻿#include "ShaderProgram.h"
 
 #include <stdexcept>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
 #include "glad/glad.h"
+#include "glm/gtc/type_ptr.hpp"
 
 const std::string parseShader(const std::string& filepath) {
     std::ifstream file(filepath);
@@ -17,7 +19,7 @@ const std::string parseShader(const std::string& filepath) {
     return buffer.str();
 }
 
-ShaderProgram::ShaderProgram(ShaderProgramInfo &info) {
+ShaderProgram::ShaderProgram(const ShaderProgramInfo &info) {
     const std::string vertexSource = parseShader(info.vertexPath);
     const std::string fragmentSource = parseShader(info.fragmentPath);
     const char* c_str;
@@ -72,5 +74,13 @@ void ShaderProgram::use() {
 
 void ShaderProgram::setInt(const std::string &uniform, const int &value) {
     glUniform1i(glGetUniformLocation(m_id, uniform.c_str()), value);
+}
+
+void ShaderProgram::setMat4(const std::string &uniform, const glm::mat4 &value, GLboolean transpose) {
+    glUniformMatrix4fv(glGetUniformLocation(m_id, uniform.c_str()), 1, transpose, glm::value_ptr(value));
+}
+
+unsigned int ShaderProgram::getId() {
+    return m_id;
 }
 
