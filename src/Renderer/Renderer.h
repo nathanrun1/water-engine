@@ -4,13 +4,14 @@
 #include <memory>
 
 #include "ShaderProgram.h"
+#include "../Models/Models.h"
 
 namespace Renderer {
     /* Initializes renderer */
     void init();
 
-    /* Renders the main scene */
-    void renderMain();
+    /* Draws the given model at the given position */
+    void drawModelAtPosition(const Assets::Model& model, glm::vec3 position);
 
     /* Creates shader program from given shaders and adds it to available program list */
     void createProgram(const std::string& programId, const ShaderProgramInfo &programInfo);

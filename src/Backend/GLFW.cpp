@@ -56,6 +56,10 @@ namespace GLFW {
         g_windowHeight = height;
     }
 
+    float getAspectRatio() {
+        return g_windowWidth / g_windowHeight;
+    }
+
     void addFrameBufferSizeCallback(const FrameBufferSizeCallback& callback) {
         g_frameBufferSizeCallbacks.push_back(callback);
     }

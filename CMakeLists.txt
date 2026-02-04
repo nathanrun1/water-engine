@@ -1,7 +1,7 @@
 ﻿cmake_minimum_required(VERSION 4.0.2)
 project(waterengine)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(deps/glfw)
 
@@ -18,7 +18,11 @@ add_executable(waterengine src/main.cpp
         src/Renderer/vertex.h
         deps/stb/stb_image.h
         src/Renderer/Texture2D.h
-        src/Renderer/Texture2D.cpp)
+        src/Renderer/Texture2D.cpp
+        src/Models/Models.h
+        src/World/Object.h
+        src/World/World.h
+        src/Models/Models.cpp)
 
 target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb)
 target_link_libraries(waterengine glfw ${GLFW_LIBRARIES})

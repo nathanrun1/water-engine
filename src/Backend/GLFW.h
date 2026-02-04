@@ -37,6 +37,9 @@ namespace GLFW {
     /* Sets height of window, has no effect after Init() */
     void setWindowHeight(int height);
 
+    /* Calculates the ratio of screen width (x) to height (y) */
+    float getAspectRatio();
+
     /* Attaches a frame buffer size callback */
     void addFrameBufferSizeCallback(const FrameBufferSizeCallback &callback);
 }
