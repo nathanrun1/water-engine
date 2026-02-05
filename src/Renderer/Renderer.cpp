@@ -1,7 +1,6 @@
 ﻿#include "Renderer.h"
 
 #include <iostream>
-
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/io.hpp>
@@ -77,6 +76,8 @@ namespace Renderer {
 
         _initModelBuffers();
         _loadModels();
+        
+        glEnable(GL_DEPTH_TEST);
 
         // unsigned int VAO, VBO, EBO;
         // glGenVertexArrays(1, &VAO);  // Generates vertex array object. This encodes bound VBOs and attribute configurations
@@ -100,17 +101,24 @@ namespace Renderer {
     }
 
     void drawModelAtPosition(const Assets::Model& model, glm::vec3 position) {
-        glm::mat4 M = glm::rotate(glm::mat4(1.0), (float)glfwGetTime() * glm::radians(50.0f),  glm::vec3(0.5f, 1.0f, 0.0f));
+        glm::mat4 M = glm::mat4(1.0);
+        M = glm::translate(M, position);
+        M = glm::rotate(M, (float)glfwGetTime() * glm::radians(50.0f),  glm::vec3(0.5f, 1.0f, 0.0f));
+        glm::mat4 V = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0, -3.0));
         glm::mat4 P = glm::perspective(glm::radians(90.0f), GLFW::getAspectRatio(), 0.1f, 100.0f);
 
-        glm::mat4 MVP = P * M; // P * V * M;
-        g_activeProgram->setMat4("u_MVP", MVP);
+        glm::mat4 MVP = M * P; // P * V * M;
+        g_activeProgram->setMat4("u_model", M);
+        g_activeProgram->setMat4("u_view", V);
+        g_activeProgram->setMat4("u_projection", P);
 
         std::span<const unsigned int> modelIndices = Assets::getModelIndices(model);
-        size_t indicesOffset = modelIndices.begin() - Assets::getAllModelIndices().begin();
+        size_t indicesOffset = (modelIndices.begin() - Assets::getAllModelIndices().begin()) * sizeof(unsigned int);
+        std::cout << "model index offset: " << indicesOffset / sizeof(unsigned int) << '\n';
+        std::cout << "this many total model indices: " << Assets::getAllModelIndices().size() << '\n';
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // TODO: change to camera background property
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDrawElements(GL_TRIANGLES, modelIndices.size(), GL_UNSIGNED_INT, (void*)(indicesOffset));
     }
 

@@ -66,6 +66,8 @@ namespace GLFW {
 
 
     void _frameBufferSizeCallback(GLFWwindow* window, const int width, const int height) {
+        g_windowWidth = width;
+        g_windowHeight = height;
         for (auto callback : g_frameBufferSizeCallbacks) {
             callback(window, width, height);
         }

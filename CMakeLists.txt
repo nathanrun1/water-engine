@@ -24,6 +24,6 @@ add_executable(waterengine src/main.cpp
         src/World/World.h
         src/Models/Models.cpp)
 
-target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb)
+target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb deps/spdlog/include)
 target_link_libraries(waterengine glfw ${GLFW_LIBRARIES})
 set_target_properties(waterengine PROPERTIES DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

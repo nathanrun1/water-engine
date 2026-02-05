@@ -17,14 +17,14 @@ namespace Assets {
     const Model createModel(const std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
         const Model newModel = Model(g_modelRanges.size());
 
+        unsigned int vertexOffset = g_modelVertices.size();
+        unsigned int indexOffset = g_modelIndices.size();
+        
         g_modelVertices.insert(g_modelVertices.end(), vertices.begin(), vertices.end());
         g_modelIndices.insert(g_modelIndices.end(), indices.begin(), indices.end());
 
         std::span<const Vertex> fullVertexSpan(g_modelVertices);
         std::span<const unsigned int> fullIndexSpan(g_modelIndices);
-
-        unsigned int vertexOffset = g_modelVertices.size();
-        unsigned int indexOffset = g_modelIndices.size();
 
         ModelRange newModelRange(
             fullVertexSpan.subspan(vertexOffset, vertices.size()),

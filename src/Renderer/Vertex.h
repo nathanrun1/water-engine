@@ -17,7 +17,7 @@ struct Vertex {
 
     static constexpr VertexAttributeDesc layout[] = {
         {0, 3, GL_FLOAT, 0},
-        {0, 3, GL_FLOAT, sizeof(position)}
+        {1, 2, GL_FLOAT, sizeof(position)}
     };
 };
 
