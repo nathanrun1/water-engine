@@ -1,13 +1,14 @@
-﻿#include "Renderer.h"
+﻿#include "renderer.h"
 
 #include <iostream>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/io.hpp>
 
-#include "Texture2D.h"
-#include "Vertex.h"
-#include "Backend/GLFW.h"
+#include "texture2d.h"
+#include "vertex.h"
+#include "backend/glfw_backend.h"
+#include "world/transform.h"
 
 // Cur implementation:
 // Single buffer for all models
@@ -31,12 +32,12 @@ namespace Renderer {
         2, 1, 3
     };
 
-    void _frameBufferSizeCallback(GLFWwindow* _, const int width, const int height) {
+    void _frame_buffer_size_callback(GLFWwindow* _, const int width, const int height) {
         glViewport(0, 0, width, height);
     }
 
     /* Initializes model data VAO, VBO and EBO */
-    void _initModelBuffers() {
+    void _init_model_buffers() {
         glGenVertexArrays(1, &g_modelVAO);
         glBindVertexArray(g_modelVAO);
 
@@ -53,7 +54,7 @@ namespace Renderer {
     }
 
     /* Loads model data into currently bound VBO and EBO */
-    void _loadModels() {
+    void _load_models() {
         std::span<const Vertex> modelVertices = Assets::getAllModelVertices();
         std::span<const unsigned int> modelIndices = Assets::getAllModelIndices();
         glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_STATIC_DRAW);
@@ -62,20 +63,20 @@ namespace Renderer {
 
 
     void init() {
-        GLFW::addFrameBufferSizeCallback(_frameBufferSizeCallback);
+        GLFW::addFrameBufferSizeCallback(_frame_buffer_size_callback);
 
         ShaderProgramInfo spInfo{
             "res/shaders/basic.vert",
             "res/shaders/basic.frag"
         };
-        createProgram("basic", spInfo);
-        useProgram("basic");
+        create_program("basic", spInfo);
+        use_program("basic");
 
         Texture2D texContainer("res/textures/container.jpg", 0);
         Texture2D texSmily("res/textures/awesomeface.png", 1);
 
-        _initModelBuffers();
-        _loadModels();
+        _init_model_buffers();
+        _load_models();
         
         glEnable(GL_DEPTH_TEST);
 
@@ -100,33 +101,31 @@ namespace Renderer {
         // glEnableVertexAttribArray(1);
     }
 
-    void drawModelAtPosition(const Assets::Model& model, glm::vec3 position) {
-        glm::mat4 M = glm::mat4(1.0);
-        M = glm::translate(M, position);
-        M = glm::rotate(M, (float)glfwGetTime() * glm::radians(50.0f),  glm::vec3(0.5f, 1.0f, 0.0f));
+    void begin_draw() {
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // TODO: change to camera background property
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         glm::mat4 V = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0, -3.0));
         glm::mat4 P = glm::perspective(glm::radians(90.0f), GLFW::getAspectRatio(), 0.1f, 100.0f);
-
-        glm::mat4 MVP = M * P; // P * V * M;
-        g_activeProgram->setMat4("u_model", M);
         g_activeProgram->setMat4("u_view", V);
         g_activeProgram->setMat4("u_projection", P);
+    }
+
+    void draw_model_with_transform(const Assets::Model& model, const Transform& transform) {
+        g_activeProgram->setMat4("u_model", transform.get_matrix());
+
 
         std::span<const unsigned int> modelIndices = Assets::getModelIndices(model);
         size_t indicesOffset = (modelIndices.begin() - Assets::getAllModelIndices().begin()) * sizeof(unsigned int);
-        std::cout << "model index offset: " << indicesOffset / sizeof(unsigned int) << '\n';
-        std::cout << "this many total model indices: " << Assets::getAllModelIndices().size() << '\n';
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // TODO: change to camera background property
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDrawElements(GL_TRIANGLES, modelIndices.size(), GL_UNSIGNED_INT, (void*)(indicesOffset));
     }
 
-    void createProgram(const std::string &programId, const ShaderProgramInfo &programInfo) {
+    void create_program(const std::string &programId, const ShaderProgramInfo &programInfo) {
         g_availablePrograms.emplace(programId, std::move(ShaderProgram(programInfo)));
     }
 
-    void useProgram(const std::string &programId) {
+    void use_program(const std::string &programId) {
         try {
             ShaderProgram& program = g_availablePrograms.at(programId);
             program.use();

@@ -6,23 +6,26 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(deps/glfw)
 
 add_executable(waterengine src/main.cpp
-        src/Input/input.h
-        src/Input/input.cpp
+        src/Input/Input.h
+        src/Input/Input.cpp
         deps/glad/src/glad.c
-        src/Backend/GLFW.cpp
-        src/Backend/GLFW.h
-        src/Renderer/renderer.h
-        src/Renderer/renderer.cpp
-        src/Renderer/ShaderProgram.h
-        src/Renderer/ShaderProgram.cpp
-        src/Renderer/vertex.h
+        src/Backend/glfw_backend.cpp
+        src/Backend/glfw_backend.h
+        src/renderer/Renderer.h
+        src/renderer/Renderer.cpp
+        src/renderer/shader_program.h
+        src/renderer/shader_program.cpp
+        src/renderer/Vertex.h
         deps/stb/stb_image.h
-        src/Renderer/Texture2D.h
-        src/Renderer/Texture2D.cpp
-        src/Models/Models.h
-        src/World/Object.h
-        src/World/World.h
-        src/Models/Models.cpp)
+        src/renderer/Texture2D.h
+        src/renderer/Texture2D.cpp
+        src/assets/Models.h
+        src/world/Object.h
+        src/world/World.h
+        src/assets/Models.cpp
+        src/world/Transform.h
+        src/world/Transform.cpp
+        src/Math/Quaternion.h)
 
 target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb deps/spdlog/include)
 target_link_libraries(waterengine glfw ${GLFW_LIBRARIES})

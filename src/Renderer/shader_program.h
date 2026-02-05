@@ -7,9 +7,9 @@
 #include "glm/glm.hpp"
 
 /* Runtime error related to OpenGL shader program initialization */
-class shaderProgramError : public std::runtime_error {
+class shader_program_error : public std::runtime_error {
 public:
-    explicit shaderProgramError(const std::string& msg) : std::runtime_error(msg) {}
+    explicit shader_program_error(const std::string& msg) : std::runtime_error(msg) {}
 };
 
 struct ShaderProgramInfo {

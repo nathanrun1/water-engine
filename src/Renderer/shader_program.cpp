@@ -1,4 +1,4 @@
-﻿#include "ShaderProgram.h"
+﻿#include "shader_program.h"
 
 #include <stdexcept>
 #include <fstream>
@@ -11,7 +11,7 @@
 const std::string parseShader(const std::string& filepath) {
     std::ifstream file(filepath);
     if (!file.is_open()) {
-        throw shaderProgramError("Failed to open file: " + filepath);
+        throw shader_program_error("Failed to open file: " + filepath);
     }
 
     std::stringstream buffer;
@@ -37,7 +37,7 @@ ShaderProgram::ShaderProgram(const ShaderProgramInfo &info) {
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog.data());
-        throw shaderProgramError("Failed to compile vertex shader at " + info.vertexPath + ". Info log below.\n" + infoLog);
+        throw shader_program_error("Failed to compile vertex shader at " + info.vertexPath + ". Info log below.\n" + infoLog);
     }
 
     // Fragment shader
@@ -49,7 +49,7 @@ ShaderProgram::ShaderProgram(const ShaderProgramInfo &info) {
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog.data());
-        throw shaderProgramError("Failed to compile fragment shader at " + info.fragmentPath + ". Info log below.\n" + infoLog);
+        throw shader_program_error("Failed to compile fragment shader at " + info.fragmentPath + ". Info log below.\n" + infoLog);
     }
 
     // Full program
@@ -61,7 +61,7 @@ ShaderProgram::ShaderProgram(const ShaderProgramInfo &info) {
     glGetProgramiv(m_id, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(m_id, 512, NULL, infoLog.data());
-        throw shaderProgramError("Shader program linking failed! Info log below.\n" + infoLog);
+        throw shader_program_error("Shader program linking failed! Info log below.\n" + infoLog);
     }
 
     glDeleteShader(vertexShader);  // Delete now-obsolete shader objects

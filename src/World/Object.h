@@ -1,9 +1,9 @@
 ﻿#ifndef WATERENGINE_OBJECT_H
 #define WATERENGINE_OBJECT_H
-#include "../Models/Models.h"
+#include "../assets/models.h"
 
 /* A 3D object existing somewhere in the scene */
-struct Object {
+struct object {
     /* 3D model of the object's appearance */
     const Models& model;
 

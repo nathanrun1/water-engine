@@ -6,9 +6,9 @@
 #include <string>
 #include <stdexcept>
 
-class textureError : public std::runtime_error {
+class texture_error : public std::runtime_error {
 public:
-    explicit textureError(const std::string& msg) : std::runtime_error(msg) {}
+    explicit texture_error(const std::string& msg) : std::runtime_error(msg) {}
 };
 
 /* An 8-bit texture, loaded from a given image */
