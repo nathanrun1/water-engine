@@ -3,7 +3,7 @@
 #include <vector>
 #include <span>
 
-#include "Renderer/Vertex.h"
+#include "Renderer/vertex.h"
 
 namespace Assets {
     struct Model {

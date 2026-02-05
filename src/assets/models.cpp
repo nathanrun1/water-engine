@@ -1,4 +1,4 @@
-﻿#include "Models.h"
+﻿#include "models.h"
 
 namespace Assets {
     /* References to range of vertex and index data of a model */

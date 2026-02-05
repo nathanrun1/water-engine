@@ -1,4 +1,4 @@
-﻿#include "Texture2D.h"
+﻿#include "texture2d.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -15,7 +15,7 @@ GLint _getTextureFormat(int nChannels) {
         case 4:
             return GL_RGBA;
         default:
-            throw textureError("Invalid channel count: " + std::to_string(nChannels));
+            throw texture_error("Invalid channel count: " + std::to_string(nChannels));
     }
 }
 
@@ -25,7 +25,7 @@ Texture2D::Texture2D(const std::string& texturePath, const unsigned int textureU
     std::byte* data = reinterpret_cast<std::byte*>(stbi_load(texturePath.c_str(), &width, &height, &nChannels, 0));
     if (!data) {
         stbi_image_free(data);
-        throw textureError("Failed to load texture: " + texturePath);
+        throw texture_error("Failed to load texture: " + texturePath);
     }
 
     glGenTextures(1, &m_id);  // Generate texture object, get ID

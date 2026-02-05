@@ -1,4 +1,4 @@
-﻿#include "GLFW.h"
+﻿#include "glfw_backend.h"
 
 #include <iostream>
 #include <exception>
@@ -66,6 +66,7 @@ namespace GLFW {
 
 
     void _frameBufferSizeCallback(GLFWwindow* window, const int width, const int height) {
+        std::cout << "Window resized to: " << width << " x " << height << '\n';
         g_windowWidth = width;
         g_windowHeight = height;
         for (auto callback : g_frameBufferSizeCallbacks) {

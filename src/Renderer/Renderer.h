@@ -3,21 +3,26 @@
 #include <map>
 #include <memory>
 
-#include "ShaderProgram.h"
-#include "../Models/Models.h"
+#include "shader_program.h"
+#include "../assets/models.h"
+#include "world/transform.h"
 
 namespace Renderer {
     /* Initializes renderer */
     void init();
 
+    /* Starts the frame draw */
+    void begin_draw();
+
     /* Draws the given model at the given position */
-    void drawModelAtPosition(const Assets::Model& model, glm::vec3 position);
 
     /* Creates shader program from given shaders and adds it to available program list */
-    void createProgram(const std::string& programId, const ShaderProgramInfo &programInfo);
+    void draw_model_with_transform(const Assets::Model& model, const Transform& position);
+
+    void create_program(const std::string& programId, const ShaderProgramInfo &programInfo);
 
     /* Uses the shader program with the given id */
-    void useProgram(const std::string& programId);
+    void use_program(const std::string& programId);
 }
 
 #endif //WATERENGINE_RENDERER_H
