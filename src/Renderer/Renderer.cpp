@@ -5,10 +5,11 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/io.hpp>
 
-#include "texture2d.h"
-#include "vertex.h"
 #include "backend/glfw_backend.h"
+#include "renderer/texture2d.h"
+#include "renderer/vertex.h"
 #include "world/transform.h"
+#include "world/camera/camera.h"
 
 // Cur implementation:
 // Single buffer for all models
@@ -16,9 +17,10 @@
 namespace Renderer {
     std::map<std::string, ShaderProgram> g_availablePrograms;
     ShaderProgram* g_activeProgram;
-    unsigned int g_modelVAO;
-    unsigned int g_modelVBO;
-    unsigned int g_modelEBO;
+    Camera g_camera;
+    unsigned int g_meshVAO;
+    unsigned int g_meshVBO;
+    unsigned int g_meshEBO;
 
     std::vector<Vertex> vertices = {
         {{-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f}},
@@ -38,14 +40,14 @@ namespace Renderer {
 
     /* Initializes model data VAO, VBO and EBO */
     void _init_model_buffers() {
-        glGenVertexArrays(1, &g_modelVAO);
-        glBindVertexArray(g_modelVAO);
+        glGenVertexArrays(1, &g_meshVAO);
+        glBindVertexArray(g_meshVAO);
 
-        glGenBuffers(1, &g_modelVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, g_modelVBO);
+        glGenBuffers(1, &g_meshVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, g_meshVBO);
 
-        glGenBuffers(1, &g_modelEBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g_modelEBO);
+        glGenBuffers(1, &g_meshEBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g_meshEBO);
 
         for (const VertexAttributeDesc& desc : Vertex::layout) {
             glVertexAttribPointer(desc.index, desc.size, desc.type, GL_FALSE, sizeof(Vertex), (void*)desc.offset);
@@ -77,41 +79,21 @@ namespace Renderer {
 
         _init_model_buffers();
         _load_models();
+
+        g_camera = Camera(Transform{{0.0f, 0.0f, 3.0f}});
         
         glEnable(GL_DEPTH_TEST);
-
-        // unsigned int VAO, VBO, EBO;
-        // glGenVertexArrays(1, &VAO);  // Generates vertex array object. This encodes bound VBOs and attribute configurations
-        // glBindVertexArray(VAO);        // Bind it as the current VAO
-        //
-        // glGenBuffers(1, &VBO);       // Generates buffer, puts buffer ID into VBO
-        // glBindBuffer(GL_ARRAY_BUFFER, VBO);  // Binds our new VBO buffer to the GL_ARRAY_BUFFER target
-        // glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);  // Writes data to the buffer bound to GL_ARRAY_BUFFER (i.e. our VBO)
-        // // GL_STATIC_DRAW specifies STATIC (modified once, used many times) and DRAW (contents modified by application, used as source for drawing)
-        //
-        // glGenBuffers(1, &EBO);
-        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
-        //
-        // // Specify how vertex data is interpreted. For attr 0: 3 values of type float, non-normalized, with a stride of 3 * float size in memory, offset of 0 in VBO
-        // // Basically, will interpret each block of 3 values starting at every memory addr of (3 * sizeof(float)) byte stride starting from offset 0 in the array.
-        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-        // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)sizeof(Vertex::position));
-        // glEnableVertexAttribArray(0);  // Tell OpenGL shaders are allowed to use this attribute
-        // glEnableVertexAttribArray(1);
     }
 
     void begin_draw() {
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // TODO: change to camera background property
+        glm::vec4 bg_color = g_camera.get_background_color();
+        glClearColor(bg_color.r, bg_color.g, bg_color.b, bg_color.a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 V = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0, -3.0));
-        glm::mat4 P = glm::perspective(glm::radians(90.0f), GLFW::get_aspect_ratio(), 0.1f, 100.0f);
-        g_activeProgram->setMat4("u_view", V);
-        g_activeProgram->setMat4("u_projection", P);
+        g_activeProgram->setMat4("u_VP", g_camera.get_vp_matrix());
     }
 
-    void draw_model_with_transform(const Assets::Mesh& model, const Transform& transform) {
+    void draw_mesh_with_transform(const Assets::Mesh& model, const Transform& transform) {
         g_activeProgram->setMat4("u_model", transform.get_matrix());
 
 

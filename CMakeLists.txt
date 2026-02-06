@@ -5,28 +5,33 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(deps/glfw)
 
-add_executable(waterengine src/main.cpp
+add_executable(waterengine
+        deps/glad/src/glad.c
+        deps/stb/stb_image.h
+
+        src/main.cpp
         src/backend/glfw_input.h
         src/backend/glfw_input.cpp
-        deps/glad/src/glad.c
-        src/Backend/glfw_backend.cpp
-        src/Backend/glfw_backend.h
-        src/renderer/Renderer.h
-        src/renderer/Renderer.cpp
+        src/backend/glfw_backend.cpp
+        src/backend/glfw_backend.h
+        src/renderer/renderer.h
+        src/renderer/renderer.cpp
         src/renderer/shader_program.h
         src/renderer/shader_program.cpp
-        src/renderer/Vertex.h
-        deps/stb/stb_image.h
-        src/renderer/Texture2D.h
-        src/renderer/Texture2D.cpp
+        src/renderer/vertex.h
+        src/renderer/texture2d.h
+        src/renderer/texture2d.cpp
         src/assets/meshes.h
-        src/world/Object.h
-        src/world/World.h
+        src/world/object.h
+        src/world/world.h
         src/assets/meshes.cpp
-        src/world/Transform.h
-        src/world/Transform.cpp
-        src/Math/Quaternion.h
-        src/world/camera/camera.h)
+        src/world/transform.h
+        src/world/transform.cpp
+        src/world/camera/camera.h
+        src/world/camera/camera.cpp
+        src/assets/meshes.cpp
+        src/assets/meshes.cpp
+        src/world/camera/camera.cpp)
 
 target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb deps/spdlog/include)
 target_link_libraries(waterengine glfw ${GLFW_LIBRARIES})

@@ -25,8 +25,8 @@ namespace GLFW::Input {
         glfwSetKeyCallback(g_window, _key_callback);
     }
 
-
     void init(GLFWwindow* window) {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         g_window = window;
         _link_callbacks();
     }
