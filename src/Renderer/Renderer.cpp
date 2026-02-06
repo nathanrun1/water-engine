@@ -55,8 +55,8 @@ namespace Renderer {
 
     /* Loads model data into currently bound VBO and EBO */
     void _load_models() {
-        std::span<const Vertex> modelVertices = Assets::get_all_model_vertices();
-        std::span<const unsigned int> modelIndices = Assets::get_all_model_indices();
+        std::span<const Vertex> modelVertices = Assets::get_all_mesh_vertices();
+        std::span<const unsigned int> modelIndices = Assets::get_all_mesh_indices();
         glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_STATIC_DRAW);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * modelIndices.size(), modelIndices.data(), GL_STATIC_DRAW);
     }
@@ -111,12 +111,12 @@ namespace Renderer {
         g_activeProgram->setMat4("u_projection", P);
     }
 
-    void draw_model_with_transform(const Assets::Model& model, const Transform& transform) {
+    void draw_model_with_transform(const Assets::Mesh& model, const Transform& transform) {
         g_activeProgram->setMat4("u_model", transform.get_matrix());
 
 
-        std::span<const unsigned int> modelIndices = Assets::get_model_indices(model);
-        size_t indicesOffset = (modelIndices.begin() - Assets::get_all_model_indices().begin()) * sizeof(unsigned int);
+        std::span<const unsigned int> modelIndices = Assets::get_mesh_indices(model);
+        size_t indicesOffset = (modelIndices.begin() - Assets::get_all_mesh_indices().begin()) * sizeof(unsigned int);
 
         glDrawElements(GL_TRIANGLES, modelIndices.size(), GL_UNSIGNED_INT, (void*)(indicesOffset));
     }

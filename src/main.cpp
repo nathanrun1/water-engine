@@ -73,7 +73,7 @@ int main() {
 
     std::vector<Vertex> vertices(std::begin(cubeVertices), std::end(cubeVertices));
     std::vector<unsigned int> indices(std::begin(cubeIndices), std::end(cubeIndices));
-    Assets::Model cube = Assets::create_model(vertices, indices);
+    Assets::Mesh cube = Assets::create_mesh(vertices, indices);
     
     Renderer::init();
     
