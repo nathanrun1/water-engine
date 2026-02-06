@@ -3,6 +3,8 @@
 #include <iostream>
 #include <exception>
 
+#include "glfw_input.h"
+
 namespace GLFW {
     GLFWwindow* g_window;
     std::vector<FrameBufferSizeCallback> g_frameBufferSizeCallbacks;
@@ -35,6 +37,8 @@ namespace GLFW {
         }
 
         glfwSetFramebufferSizeCallback(g_window, _frame_buffer_size_callback);
+
+        Input::init(g_window);
     }
 
     void end_frame() {
@@ -60,10 +64,18 @@ namespace GLFW {
 
     void set_window_width(const int width) {
         g_window_width = width;
+        glfwSetWindowSize(g_window, g_window_width, g_window_height);
+    }
+    int get_window_width() {
+        return g_window_width;
     }
 
     void set_window_height(const int height) {
         g_window_height = height;
+        glfwSetWindowSize(g_window, g_window_width, g_window_height);
+    }
+    int get_window_height() {
+        return g_window_height;
     }
 
     float get_aspect_ratio() {

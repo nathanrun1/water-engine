@@ -14,11 +14,10 @@ namespace Renderer {
     /* Starts the frame draw */
     void begin_draw();
 
-    /* Draws the given model at the given position */
+    /* Draws the given mesh with the given (unparented) transform */
+    void draw_mesh_with_transform(const Assets::Mesh& model, const Transform& position);
 
     /* Creates shader program from given shaders and adds it to available program list */
-    void draw_model_with_transform(const Assets::Mesh& model, const Transform& position);
-
     void create_program(const std::string& programId, const ShaderProgramInfo &programInfo);
 
     /* Uses the shader program with the given id */

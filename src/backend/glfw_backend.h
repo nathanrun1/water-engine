@@ -34,11 +34,11 @@ namespace GLFW {
     /* Retrieve pointer to GLFW window instance */
     GLFWwindow* get_window_ptr();
 
-    /* Sets width of window, has no effect after Init() */
     void set_window_width(int width);
+    int get_window_width();
 
-    /* Sets height of window, has no effect after Init() */
     void set_window_height(int height);
+    int get_window_height();
 
     /* Calculates the ratio of screen width (x) to height (y) */
     float get_aspect_ratio();

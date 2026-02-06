@@ -84,7 +84,7 @@ int main() {
             transform.position = pos;
             transform.set_euler_angles(0.0f, glfwGetTime() * glm::radians(90.0f), 0.0f);
             transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
-            Renderer::draw_model_with_transform(cube, transform);
+            Renderer::draw_mesh_with_transform(cube, transform);
         }
         GLFW::end_frame();
     }

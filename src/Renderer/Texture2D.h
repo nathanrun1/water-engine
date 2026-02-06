@@ -11,7 +11,9 @@ public:
     explicit texture_error(const std::string& msg) : std::runtime_error(msg) {}
 };
 
-/* An 8-bit texture, loaded from a given image */
+// TODO: do same with textures as was done with meshes (batching)
+
+/* An 8-bit depth texture, loaded from a given image */
 struct Texture2D {
     Texture2D(const std::string& texturePath, const unsigned int textureUnit = 0);
 
