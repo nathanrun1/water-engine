@@ -19,10 +19,10 @@ add_executable(waterengine src/main.cpp
         deps/stb/stb_image.h
         src/renderer/Texture2D.h
         src/renderer/Texture2D.cpp
-        src/assets/Models.h
+        src/assets/meshes.h
         src/world/Object.h
         src/world/World.h
-        src/assets/Models.cpp
+        src/assets/meshes.cpp
         src/world/Transform.h
         src/world/Transform.cpp
         src/Math/Quaternion.h

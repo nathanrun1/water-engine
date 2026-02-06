@@ -1,6 +1,6 @@
 ﻿#ifndef WATERENGINE_OBJECT_H
 #define WATERENGINE_OBJECT_H
-#include "../assets/models.h"
+#include "../assets/meshes.h"
 
 /* A 3D object existing somewhere in the scene */
 struct object {

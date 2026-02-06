@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "shader_program.h"
-#include "assets/models.h"
+#include "assets/meshes.h"
 #include "world/transform.h"
 
 namespace Renderer {
@@ -17,7 +17,7 @@ namespace Renderer {
     /* Draws the given model at the given position */
 
     /* Creates shader program from given shaders and adds it to available program list */
-    void draw_model_with_transform(const Assets::Model& model, const Transform& position);
+    void draw_model_with_transform(const Assets::Mesh& model, const Transform& position);
 
     void create_program(const std::string& programId, const ShaderProgramInfo &programInfo);
 
