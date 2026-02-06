@@ -6,8 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(deps/glfw)
 
 add_executable(waterengine src/main.cpp
-        src/Input/Input.h
-        src/Input/Input.cpp
+        src/backend/glfw_input.h
+        src/backend/glfw_input.cpp
         deps/glad/src/glad.c
         src/Backend/glfw_backend.cpp
         src/Backend/glfw_backend.h
@@ -25,7 +25,8 @@ add_executable(waterengine src/main.cpp
         src/assets/Models.cpp
         src/world/Transform.h
         src/world/Transform.cpp
-        src/Math/Quaternion.h)
+        src/Math/Quaternion.h
+        src/world/camera/camera.h)
 
 target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb deps/spdlog/include)
 target_link_libraries(waterengine glfw ${GLFW_LIBRARIES})

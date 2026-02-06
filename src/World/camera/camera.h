@@ -1,0 +1,8 @@
+﻿#ifndef WATERENGINE_CAMERA_H
+#define WATERENGINE_CAMERA_H
+
+struct Camera {
+
+};
+
+#endif //WATERENGINE_CAMERA_H

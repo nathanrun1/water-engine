@@ -67,25 +67,26 @@ glm::vec3 cubePositions[] = {
 };
 
 int main() {
-    GLFW::setWindowWidth(800);
-    GLFW::setWindowWidth(600);
+    GLFW::set_window_width(800);
+    GLFW::set_window_width(600);
     GLFW::init();
 
     std::vector<Vertex> vertices(std::begin(cubeVertices), std::end(cubeVertices));
     std::vector<unsigned int> indices(std::begin(cubeIndices), std::end(cubeIndices));
-    Assets::Model cube = Assets::createModel(vertices, indices);
+    Assets::Model cube = Assets::create_model(vertices, indices);
     
     Renderer::init();
     
-    while (!GLFW::windowShouldClose()) {
+    while (!GLFW::window_should_close()) {
         Renderer::begin_draw();
         for (glm::vec3& pos : cubePositions) {
             Transform transform;
             transform.position = pos;
             transform.set_euler_angles(0.0f, glfwGetTime() * glm::radians(90.0f), 0.0f);
+            transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
             Renderer::draw_model_with_transform(cube, transform);
         }
-        GLFW::endFrame();
+        GLFW::end_frame();
     }
     GLFW::destroy();
 }

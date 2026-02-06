@@ -55,15 +55,15 @@ namespace Renderer {
 
     /* Loads model data into currently bound VBO and EBO */
     void _load_models() {
-        std::span<const Vertex> modelVertices = Assets::getAllModelVertices();
-        std::span<const unsigned int> modelIndices = Assets::getAllModelIndices();
+        std::span<const Vertex> modelVertices = Assets::get_all_model_vertices();
+        std::span<const unsigned int> modelIndices = Assets::get_all_model_indices();
         glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_STATIC_DRAW);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * modelIndices.size(), modelIndices.data(), GL_STATIC_DRAW);
     }
 
 
     void init() {
-        GLFW::addFrameBufferSizeCallback(_frame_buffer_size_callback);
+        GLFW::add_frame_buffer_size_callback(_frame_buffer_size_callback);
 
         ShaderProgramInfo spInfo{
             "res/shaders/basic.vert",
@@ -106,7 +106,7 @@ namespace Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 V = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0, -3.0));
-        glm::mat4 P = glm::perspective(glm::radians(90.0f), GLFW::getAspectRatio(), 0.1f, 100.0f);
+        glm::mat4 P = glm::perspective(glm::radians(90.0f), GLFW::get_aspect_ratio(), 0.1f, 100.0f);
         g_activeProgram->setMat4("u_view", V);
         g_activeProgram->setMat4("u_projection", P);
     }
@@ -115,8 +115,8 @@ namespace Renderer {
         g_activeProgram->setMat4("u_model", transform.get_matrix());
 
 
-        std::span<const unsigned int> modelIndices = Assets::getModelIndices(model);
-        size_t indicesOffset = (modelIndices.begin() - Assets::getAllModelIndices().begin()) * sizeof(unsigned int);
+        std::span<const unsigned int> modelIndices = Assets::get_model_indices(model);
+        size_t indicesOffset = (modelIndices.begin() - Assets::get_all_model_indices().begin()) * sizeof(unsigned int);
 
         glDrawElements(GL_TRIANGLES, modelIndices.size(), GL_UNSIGNED_INT, (void*)(indicesOffset));
     }

@@ -8,9 +8,9 @@
 
 namespace GLFW {
     /* Runtime error related to GLFW backend */
-    class glfwRuntimeError : public std::runtime_error {
+    class glfw_runtime_error : public std::runtime_error {
     public:
-        explicit glfwRuntimeError(const std::string& msg) : std::runtime_error(msg) {}
+        explicit glfw_runtime_error(const std::string& msg) : std::runtime_error(msg) {}
     };
 
 
@@ -20,28 +20,31 @@ namespace GLFW {
     void init();
 
     /* To be invoked when current frame is ready to be displayed */
-    void endFrame();
+    void end_frame();
 
     /* De-initialize GLFW window and state */
     void destroy();
 
     /* Determines whether the current window instance should close */
-    bool windowShouldClose();
+    bool window_should_close();
+
+    /* Sets whether the current window instance should close */
+    void set_window_should_close(bool should_close = true);
 
     /* Retrieve pointer to GLFW window instance */
-    GLFWwindow* getWindowPointer();
+    GLFWwindow* get_window_ptr();
 
     /* Sets width of window, has no effect after Init() */
-    void setWindowWidth(int width);
+    void set_window_width(int width);
 
     /* Sets height of window, has no effect after Init() */
-    void setWindowHeight(int height);
+    void set_window_height(int height);
 
     /* Calculates the ratio of screen width (x) to height (y) */
-    float getAspectRatio();
+    float get_aspect_ratio();
 
     /* Attaches a frame buffer size callback */
-    void addFrameBufferSizeCallback(const FrameBufferSizeCallback &callback);
+    void add_frame_buffer_size_callback(const FrameBufferSizeCallback &callback);
 }
 
 #endif //WATERENGINE_GLFW_H

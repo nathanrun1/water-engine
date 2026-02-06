@@ -14,7 +14,7 @@ namespace Assets {
     std::vector<unsigned int> g_modelIndices;
     std::unordered_map<unsigned int, ModelRange> g_modelRanges;
 
-    const Model createModel(const std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
+    const Model create_model(const std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
         const Model newModel = Model(g_modelRanges.size());
 
         unsigned int vertexOffset = g_modelVertices.size();
@@ -35,19 +35,19 @@ namespace Assets {
         return newModel;
     }
 
-    std::span<const Vertex> getModelVertices(const Model &model) {
+    std::span<const Vertex> get_model_vertices(const Model &model) {
         return g_modelRanges[model.id].vertices;
     }
 
-    std::span<const unsigned int> getModelIndices(const Model &model) {
+    std::span<const unsigned int> get_model_indices(const Model &model) {
         return g_modelRanges[model.id].indices;
     }
 
-    std::span<const Vertex> getAllModelVertices() {
+    std::span<const Vertex> get_all_model_vertices() {
         return std::span(g_modelVertices);
     }
 
-    std::span<const unsigned int> getAllModelIndices() {
+    std::span<const unsigned int> get_all_model_indices() {
         return std::span(g_modelIndices);
     }
 };
