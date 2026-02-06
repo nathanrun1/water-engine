@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "shader_program.h"
-#include "../assets/models.h"
+#include "assets/models.h"
 #include "world/transform.h"
 
 namespace Renderer {

@@ -7,31 +7,37 @@ namespace GLFW {
     GLFWwindow* g_window;
     std::vector<FrameBufferSizeCallback> g_frameBufferSizeCallbacks;
     
-    int g_windowWidth = 400;
-    int g_windowHeight = 400;
+    int g_window_width = 400;
+    int g_window_height = 400;
 
-    void _frameBufferSizeCallback(GLFWwindow*, int, int);
-    
+    void _frame_buffer_size_callback(GLFWwindow* window, const int width, const int height) {
+        g_window_width = width;
+        g_window_height = height;
+        for (auto callback : g_frameBufferSizeCallbacks) {
+            callback(window, width, height);
+        }
+    }
+
     
     void init() {
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        g_window = glfwCreateWindow(g_windowWidth, g_windowHeight, "Water", nullptr, nullptr);
+        g_window = glfwCreateWindow(g_window_width, g_window_height, "Water", nullptr, nullptr);
         if (!g_window) {
             glfwTerminate();
-            throw glfwRuntimeError("Failed to create GLFW window!");
+            throw glfw_runtime_error("Failed to create GLFW window!");
         }
         glfwMakeContextCurrent(g_window);
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            throw glfwRuntimeError("Failed to initialize GLAD!");
+            throw glfw_runtime_error("Failed to initialize GLAD!");
         }
 
-        glfwSetFramebufferSizeCallback(g_window, _frameBufferSizeCallback);
+        glfwSetFramebufferSizeCallback(g_window, _frame_buffer_size_callback);
     }
 
-    void endFrame() {
+    void end_frame() {
         glfwSwapBuffers(g_window);
         glfwPollEvents();
     }
@@ -40,37 +46,31 @@ namespace GLFW {
         glfwTerminate();
     }
 
-    bool windowShouldClose() {
+    bool window_should_close() {
         return glfwWindowShouldClose(g_window);
     }
 
-    GLFWwindow* getWindowPointer() {
+    void set_window_should_close(bool should_close) {
+        glfwSetWindowShouldClose(g_window, should_close);
+    }
+
+    GLFWwindow* get_window_ptr() {
         return g_window;
     }
 
-    void setWindowWidth(const int width) {
-        g_windowWidth = width;
+    void set_window_width(const int width) {
+        g_window_width = width;
     }
 
-    void setWindowHeight(const int height) {
-        g_windowHeight = height;
+    void set_window_height(const int height) {
+        g_window_height = height;
     }
 
-    float getAspectRatio() {
-        return g_windowWidth / g_windowHeight;
+    float get_aspect_ratio() {
+        return g_window_width / g_window_height;
     }
 
-    void addFrameBufferSizeCallback(const FrameBufferSizeCallback& callback) {
+    void add_frame_buffer_size_callback(const FrameBufferSizeCallback& callback) {
         g_frameBufferSizeCallbacks.push_back(callback);
-    }
-
-
-    void _frameBufferSizeCallback(GLFWwindow* window, const int width, const int height) {
-        std::cout << "Window resized to: " << width << " x " << height << '\n';
-        g_windowWidth = width;
-        g_windowHeight = height;
-        for (auto callback : g_frameBufferSizeCallbacks) {
-            callback(window, width, height);
-        }
     }
 }
