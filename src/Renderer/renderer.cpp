@@ -22,7 +22,7 @@ namespace Renderer {
     unsigned int g_meshVBO;
     unsigned int g_meshEBO;
 
-    std::vector<Vertex> vertices = {
+    std::vector<vertex> vertices = {
         {{-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f}},
         {{ 0.5f, -0.5f, 0.0f}, {1.0f, 0.0f}},
         {{-0.5f,  0.5f, 0.0f}, {0.0f, 1.0f}},
@@ -49,17 +49,17 @@ namespace Renderer {
         glGenBuffers(1, &g_meshEBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g_meshEBO);
 
-        for (const VertexAttributeDesc& desc : Vertex::layout) {
-            glVertexAttribPointer(desc.index, desc.size, desc.type, GL_FALSE, sizeof(Vertex), (void*)desc.offset);
+        for (const VertexAttributeDesc& desc : vertex::layout) {
+            glVertexAttribPointer(desc.index, desc.size, desc.type, GL_FALSE, sizeof(vertex), (void*)desc.offset);
             glEnableVertexAttribArray(desc.index);
         }
     }
 
     /* Loads model data into currently bound VBO and EBO */
     void _load_models() {
-        std::span<const Vertex> modelVertices = Assets::get_all_mesh_vertices();
+        std::span<const vertex> modelVertices = Assets::get_all_mesh_vertices();
         std::span<const unsigned int> modelIndices = Assets::get_all_mesh_indices();
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertex) * modelVertices.size(), modelVertices.data(), GL_STATIC_DRAW);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * modelIndices.size(), modelIndices.data(), GL_STATIC_DRAW);
     }
 

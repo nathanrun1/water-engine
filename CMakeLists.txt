@@ -14,19 +14,19 @@ add_executable(waterengine
         src/backend/glfw_input.cpp
         src/backend/glfw_backend.cpp
         src/backend/glfw_backend.h
-        src/renderer/renderer.h
-        src/renderer/renderer.cpp
+        src/Renderer/Renderer.h
+        src/Renderer/Renderer.cpp
         src/renderer/shader_program.h
         src/renderer/shader_program.cpp
-        src/renderer/vertex.h
-        src/renderer/texture2d.h
-        src/renderer/texture2d.cpp
+        src/Renderer/Vertex.h
+        src/Renderer/Texture2D.h
+        src/Renderer/Texture2D.cpp
         src/assets/meshes.h
-        src/world/object.h
-        src/world/world.h
+        src/World/Object.h
+        src/World/World.h
         src/assets/meshes.cpp
-        src/world/transform.h
-        src/world/transform.cpp
+        src/World/Transform.h
+        src/World/Transform.cpp
         src/world/camera/camera.h
         src/world/camera/camera.cpp
         src/assets/meshes.cpp
