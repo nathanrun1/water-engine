@@ -72,15 +72,20 @@ void ShaderProgram::use() {
     glUseProgram(m_id);
 }
 
-void ShaderProgram::setInt(const std::string &uniform, const int &value) {
+void ShaderProgram::set_int(const std::string &uniform, const int &value) {
     glUniform1i(glGetUniformLocation(m_id, uniform.c_str()), value);
 }
 
-void ShaderProgram::setMat4(const std::string &uniform, const glm::mat4 &value, GLboolean transpose) {
+void ShaderProgram::set_mat4(const std::string &uniform, const glm::mat4 &value, GLboolean transpose) {
     glUniformMatrix4fv(glGetUniformLocation(m_id, uniform.c_str()), 1, transpose, glm::value_ptr(value));
 }
 
-unsigned int ShaderProgram::getId() {
+void ShaderProgram::set_uint(const std::string &uniform, const unsigned int &value) {
+    glUniform1ui(glGetUniformLocation(m_id, uniform.c_str()), value);
+}
+
+
+unsigned int ShaderProgram::get_id() {
     return m_id;
 }
 

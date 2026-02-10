@@ -1,11 +1,10 @@
-﻿#include "texture2d.h"
+﻿#include "deprecated/texture2d.h"
 
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 
-GLint _getTextureFormat(int nChannels) {
-    switch (nChannels) {
+GLint _get_texture_format(int n_channels) {
+    switch (n_channels) {
         case 1:
             return GL_RED;
         case 2:
@@ -15,14 +14,14 @@ GLint _getTextureFormat(int nChannels) {
         case 4:
             return GL_RGBA;
         default:
-            throw texture_error("Invalid channel count: " + std::to_string(nChannels));
+            throw texture_error("Invalid channel count: " + std::to_string(n_channels));
     }
 }
 
 Texture2D::Texture2D(const std::string& texturePath, const unsigned int textureUnit) : m_unit{textureUnit} {
-    int width, height, nChannels;
+    int width, height, n_channels;
     stbi_set_flip_vertically_on_load(1);
-    std::byte* data = reinterpret_cast<std::byte*>(stbi_load(texturePath.c_str(), &width, &height, &nChannels, 0));
+    std::byte* data = reinterpret_cast<std::byte*>(stbi_load(texturePath.c_str(), &width, &height, &n_channels, 0));
     if (!data) {
         stbi_image_free(data);
         throw texture_error("Failed to load texture: " + texturePath);
@@ -37,9 +36,9 @@ Texture2D::Texture2D(const std::string& texturePath, const unsigned int textureU
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);  // When texel:pixel ratio is high (above 1), texture is downscaled/minified, and we decide to use nearest filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   // When texel:pixel ratio is low (below 1), texture is upscaled/magnified, and we decide to use bilinear filtering
 
-    GLint textureFormat = _getTextureFormat(nChannels);
+    GLint textureFormat = _get_texture_format(n_channels);
     // load data to texture
-    glTexImage2D(GL_TEXTURE_2D, 0, _getTextureFormat(nChannels), width, height, 0, _getTextureFormat(nChannels), GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, _get_texture_format(n_channels), GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D); // generate mipmaps
 
     stbi_image_free(data);

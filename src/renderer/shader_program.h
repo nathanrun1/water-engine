@@ -27,14 +27,12 @@ public:
     /* Set this as the active shader program */
     void use();
 
-    /* Set the value of an integer uniform. Program must be currently in use. */
-    void setInt(const std::string& uniform, const int& value);
-
-    /* Set the value of a 4x4 matrix uniform. Program must be currently in use. */
-    void setMat4(const std::string& uniform, const glm::mat4& value, const GLboolean transpose = GL_FALSE);
+    void set_int(const std::string& uniform, const int& value);
+    void set_mat4(const std::string& uniform, const glm::mat4& value, const GLboolean transpose = GL_FALSE);
+    void set_uint(const std::string& uniform, const unsigned int& value);
 
     /* Retrieve the shader program's id */
-    unsigned int getId();
+    unsigned int get_id();
 private:
     unsigned int m_id;
 };

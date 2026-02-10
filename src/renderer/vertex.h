@@ -14,10 +14,12 @@ struct VertexAttributeDesc {
 struct Vertex {
     glm::vec3 position;
     glm::vec2 texCoord;
+    glm::vec3 normal;
 
     static constexpr VertexAttributeDesc layout[] = {
         {0, 3, GL_FLOAT, 0},
-        {1, 2, GL_FLOAT, sizeof(position)}
+        {1, 2, GL_FLOAT, sizeof(position)},
+        {2, 3, GL_FLOAT, sizeof(position) + sizeof(texCoord)}
     };
 };
 
