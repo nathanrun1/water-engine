@@ -103,6 +103,14 @@ namespace Input {
         RightSuper,
         Menu,
     };
+    
+    enum class MouseButton {
+        M1,M2,M3,M4,M5,M6,M7,M8,
+        Left,
+        Right,
+        Middle,
+        Last
+    };
 }
 
 namespace std {
@@ -117,6 +125,13 @@ namespace std {
     struct hash<Input::Action> {
         std::size_t operator()(Input::Action a) const noexcept {
             return static_cast<std::size_t>(a);
+        }
+    };
+    
+    template<>
+    struct hash<Input::MouseButton> {
+        std::size_t operator()(Input::MouseButton m) const noexcept {
+            return static_cast<std::size_t>(m);
         }
     };
 }
