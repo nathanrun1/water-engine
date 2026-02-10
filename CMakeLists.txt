@@ -15,7 +15,7 @@ file(GLOB_RECURSE LOCAL_SRC CONFIGURE_DEPENDS
         
         "src/renderer/renderer.cpp"
         "src/renderer/shader_program.cpp"
-        "src/renderer/texture2d.cpp"
+        "src/deprecated/texture2d.cpp"
         
         "src/world/camera/camera.cpp"
         "src/world/transform.cpp"
@@ -45,6 +45,10 @@ add_executable(waterengine
         src/backend/glfw_enums.h
         src/input/input.h
         src/input/input.cpp
+        src/assets/textures_2d.h
+        src/assets/textures_2d.cpp
+        src/assets/materials.h
+        src/assets/materials.cpp
 )
 
 target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb deps/spdlog/include deps/imgui)

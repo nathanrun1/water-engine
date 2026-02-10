@@ -10,44 +10,44 @@ namespace Assets {
         std::span<const unsigned int> indices;
     };
 
-    std::vector<Vertex> g_meshVertices;
-    std::vector<unsigned int> g_meshIndices;
-    std::unordered_map<unsigned int, MeshRange> g_meshRanges;
+    std::vector<Vertex> g_mesh_vertices;
+    std::vector<unsigned int> g_mesh_indices;
+    std::unordered_map<unsigned int, MeshRange> g_mesh_ranges;
 
-    const Mesh create_mesh(const std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
-        const Mesh newMesh = Mesh(g_meshRanges.size());
+    Mesh create_mesh(const std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
+        const Mesh new_mesh = Mesh(g_mesh_ranges.size());
 
-        unsigned int vertexOffset = g_meshVertices.size();
-        unsigned int indexOffset = g_meshIndices.size();
+        unsigned int vertex_offset = g_mesh_vertices.size();
+        unsigned int index_offset = g_mesh_indices.size();
         
-        g_meshVertices.insert(g_meshVertices.end(), vertices.begin(), vertices.end());
-        g_meshIndices.insert(g_meshIndices.end(), indices.begin(), indices.end());
+        g_mesh_vertices.insert(g_mesh_vertices.end(), vertices.begin(), vertices.end());
+        g_mesh_indices.insert(g_mesh_indices.end(), indices.begin(), indices.end());
 
-        std::span<const Vertex> fullVertexSpan(g_meshVertices);
-        std::span<const unsigned int> fullIndexSpan(g_meshIndices);
+        std::span<const Vertex> full_vertex_span(g_mesh_vertices);
+        std::span<const unsigned int> full_index_span(g_mesh_indices);
 
-        MeshRange newMeshRange(
-            fullVertexSpan.subspan(vertexOffset, vertices.size()),
-            fullIndexSpan.subspan(indexOffset, indices.size())
+        MeshRange new_mesh_range(
+            full_vertex_span.subspan(vertex_offset, vertices.size()),
+            full_index_span.subspan(index_offset, indices.size())
         );
 
-        g_meshRanges[newMesh.id] = newMeshRange;
-        return newMesh;
+        g_mesh_ranges[new_mesh.id] = new_mesh_range;
+        return new_mesh;
     }
 
     std::span<const Vertex> get_mesh_vertices(const Mesh &mesh) {
-        return g_meshRanges[mesh.id].vertices;
+        return g_mesh_ranges[mesh.id].vertices;
     }
 
     std::span<const unsigned int> get_mesh_indices(const Mesh &mesh) {
-        return g_meshRanges[mesh.id].indices;
+        return g_mesh_ranges[mesh.id].indices;
     }
 
     std::span<const Vertex> get_all_mesh_vertices() {
-        return std::span(g_meshVertices);
+        return std::span(g_mesh_vertices);
     }
 
     std::span<const unsigned int> get_all_mesh_indices() {
-        return std::span(g_meshIndices);
+        return std::span(g_mesh_indices);
     }
 };

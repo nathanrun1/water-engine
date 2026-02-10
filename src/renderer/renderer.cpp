@@ -5,8 +5,9 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/io.hpp>
 
+#include "assets/materials.h"
 #include "backend/glfw_backend.h"
-#include "renderer/texture2d.h"
+#include "deprecated/texture2d.h"
 #include "renderer/vertex.h"
 #include "world/transform.h"
 #include "world/world.h"
@@ -22,6 +23,8 @@ namespace Renderer {
     unsigned int g_meshVBO;
     unsigned int g_meshEBO;
 
+    unsigned int g_albedo_array;
+
     std::vector<Vertex> vertices = {
         {{-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f}},
         {{ 0.5f, -0.5f, 0.0f}, {1.0f, 0.0f}},
@@ -33,6 +36,21 @@ namespace Renderer {
         2, 0, 1,
         2, 1, 3
     };
+
+
+    unsigned int _texture_format(int n_channels) {
+        switch (n_channels) {
+            case 1:
+                return GL_RED;
+            case 2:
+                return GL_RG;
+            case 3:
+                return GL_RGB;
+            default:
+                return GL_RGBA;
+        }
+    }
+
 
     void _frame_buffer_size_callback(GLFWwindow* _, const int width, const int height) {
         glViewport(0, 0, width, height);
@@ -63,6 +81,39 @@ namespace Renderer {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * modelIndices.size(), modelIndices.data(), GL_STATIC_DRAW);
     }
 
+    /* Initializes and binds texture arrays */
+    void _init_textures() {
+        // Albedo textures
+        glGenTextures(1, &g_albedo_array);
+        glActiveTexture(GL_TEXTURE0); // Albedos in unit 0 TODO: don't hardcode this
+        glBindTexture(GL_TEXTURE_2D_ARRAY, g_albedo_array);
+    }
+
+    /* Initializes and binds material texture arrays */
+    void _load_textures() {
+        glActiveTexture(GL_TEXTURE0); // Albedos in unit 0 TODO: don't hardcode this
+
+        std::span<const Assets::Texture2D> albedos = Assets::get_all_albedos();
+
+        unsigned int width, height, n_channels, format;
+        width = albedos[0].width;
+        height = albedos[0].height;
+        n_channels = albedos[0].n_channels;
+        format = _texture_format(n_channels);
+        glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, width, height,
+            albedos.size(), 0, format, GL_UNSIGNED_BYTE, nullptr);
+        for (size_t mat = 0; mat < albedos.size(); ++mat) {
+            const std::byte* data = Assets::get_texture_data(albedos[mat]);
+            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, mat, width, height, 1,
+                format, GL_UNSIGNED_BYTE, data);
+        }
+
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);  // Set mirrored wrapping
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);  // When texel:pixel ratio is high (above 1), texture is downscaled/minified, and we decide to use nearest filtering
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   // When texel:pixel ratio is low (below 1), texture is upscaled/magnified, and we decide to use bilinear filtering
+    }
+
 
     void init() {
         GLFW::add_frame_buffer_size_callback(_frame_buffer_size_callback);
@@ -74,11 +125,11 @@ namespace Renderer {
         create_program("basic", spInfo);
         use_program("basic");
 
-        Texture2D texContainer("res/textures/container.jpg", 0);
-        Texture2D texSmily("res/textures/awesomeface.png", 1);
-
         _init_model_buffers();
         _load_models();
+
+        _init_textures();
+        _load_textures();
         
         glEnable(GL_DEPTH_TEST);
     }
@@ -88,12 +139,12 @@ namespace Renderer {
         glClearColor(bg_color.r, bg_color.g, bg_color.b, bg_color.a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        g_activeProgram->setMat4("u_VP", World::get_main_camera().get_vp_matrix());
+        g_activeProgram->set_mat4("uVP", World::get_main_camera().get_vp_matrix());
     }
 
-    void draw_mesh_with_transform(const Assets::Mesh& model, const Transform& transform) {
-        g_activeProgram->setMat4("u_model", transform.get_matrix());
-
+    void draw_mesh(const Assets::Mesh& model, const Transform& transform, const Assets::Material& material) {
+        g_activeProgram->set_mat4("uModel", transform.get_matrix());
+        g_activeProgram->set_uint("uMaterial", material.id);
 
         std::span<const unsigned int> modelIndices = Assets::get_mesh_indices(model);
         size_t indicesOffset = (modelIndices.begin() - Assets::get_all_mesh_indices().begin()) * sizeof(unsigned int);
