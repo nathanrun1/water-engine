@@ -45,6 +45,9 @@ namespace GLFW {
 
     /* Attaches a frame buffer size callback */
     void add_frame_buffer_size_callback(const FrameBufferSizeCallback &callback);
+    
+    /* Retrieve amount of seconds since application was launched */
+    double get_time();
 }
 
 #endif //WATERENGINE_GLFW_H
