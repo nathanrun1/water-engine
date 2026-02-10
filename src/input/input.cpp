@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ostream>
 
+#include "imgui.h"
 #include "backend/glfw_enums.h"
 #include "backend/glfw_input.h"
 
@@ -31,9 +32,12 @@ namespace Input {
     
     void _set_cursor_game() {
         GLFW::Input::set_focus_cursor(true);
+        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
     }
     void _set_cursor_gui() {
         GLFW::Input::set_focus_cursor(false);
+        ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+        std::cout << (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_NoMouse) << '\n';
     }
     
     void set_cursor_mode(const CursorMode& cursor_mode) {

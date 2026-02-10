@@ -78,13 +78,13 @@ glm::vec3 cubePositions[] = {
 
 void key_callback(Key key, Action action) {
     if (key == Key::Escape && action == Action::Press) {
-        GLFW::Input::set_focus_cursor(false);
+        Input::set_cursor_mode(CursorMode::GUI);
     }
 }
 
 void mouse_callback(MouseButton mouse_button, Action action) {
     if (!ImGui::GetIO().WantCaptureMouse && mouse_button == MouseButton::M1 && action == Action::Press)
-        GLFW::Input::set_focus_cursor(true);
+        Input::set_cursor_mode(CursorMode::GAME);
 }
 
 int main() {
