@@ -1,8 +1,14 @@
 ﻿#include <iostream>
 
-#include "Renderer/renderer.h"
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+
+#include "renderer/renderer.h"
 #include "backend/glfw_backend.h"
 #include "world/transform.h"
+#include "world/update_registry.h"
+#include "world/world.h"
 
 // TO IMPLEMENT:
 // - Load from .obj
@@ -67,26 +73,45 @@ glm::vec3 cubePositions[] = {
 };
 
 int main() {
-    GLFW::set_window_width(800);
-    GLFW::set_window_width(600);
+    GLFW::set_window_width(1600);
+    GLFW::set_window_height(1200);
     GLFW::init();
+    
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(GLFW::get_window_ptr(), true);
+    ImGui_ImplOpenGL3_Init();
 
     std::vector<Vertex> vertices(std::begin(cubeVertices), std::end(cubeVertices));
     std::vector<unsigned int> indices(std::begin(cubeIndices), std::end(cubeIndices));
     Assets::Mesh cube = Assets::create_mesh(vertices, indices);
     
+    World::init();
     Renderer::init();
     
     while (!GLFW::window_should_close()) {
         Renderer::begin_draw();
+        
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        ImGui::ShowDemoWindow();
+        
         for (glm::vec3& pos : cubePositions) {
+            World::UpdateRegistry::run_all_callbacks();
             Transform transform;
             transform.position = pos;
             transform.set_euler_angles(0.0f, glfwGetTime() * glm::radians(90.0f), 0.0f);
             transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
             Renderer::draw_mesh_with_transform(cube, transform);
         }
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        
         GLFW::end_frame();
     }
     GLFW::destroy();
+    
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 }

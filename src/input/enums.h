@@ -4,6 +4,13 @@
 #include <unordered_map>
 
 namespace Input {
+    enum class Action {
+        Press,
+        /* Key is held down */
+        Repeat,
+        Release,
+    };
+    
     enum class Key {
         Unknown,
 
@@ -103,6 +110,13 @@ namespace std {
     struct hash<Input::Key> {
         std::size_t operator()(Input::Key k) const noexcept {
             return static_cast<std::size_t>(k);
+        }
+    };
+    
+    template<>
+    struct hash<Input::Action> {
+        std::size_t operator()(Input::Action a) const noexcept {
+            return static_cast<std::size_t>(a);
         }
     };
 }

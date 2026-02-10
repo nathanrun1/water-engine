@@ -11,7 +11,7 @@ struct VertexAttributeDesc {
     std::size_t offset;
 };
 
-struct vertex {
+struct Vertex {
     glm::vec3 position;
     glm::vec2 texCoord;
 

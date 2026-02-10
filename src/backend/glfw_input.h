@@ -1,5 +1,5 @@
-﻿#ifndef WATERENGINE_INPUT_H
-#define WATERENGINE_INPUT_H
+﻿#ifndef WATERENGINE_GLFW_INPUT_H
+#define WATERENGINE_GLFW_INPUT_H
 
 #include <functional>
 #include <vector>
@@ -7,30 +7,24 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-namespace GLFW::Input {
-    const int KEY_FORWARD = GLFW_KEY_W;
-    const int KEY_BACKWARD = GLFW_KEY_S;
-    const int KEY_RIGHT = GLFW_KEY_D;
-    const int KEY_LEFT = GLFW_KEY_A;
-    const int KEY_CLOSE = GLFW_KEY_ESCAPE;
+#include "input/enums.h"
+#include "input/input.h"
 
-    typedef std::function<void(double, double)> CursorPosCallback;
-    typedef std::function<void(int, int, int, int)> KeyCallback;
+namespace GLFW::Input {
+    typedef std::function<void(double xpos, double ypos)> GlfwCursorPosCallback;
+    typedef std::function<void(int key, int scancode, int action, int mods)> GlfwKeyCallback;
 
     /* Initializes the input system */
     void init(GLFWwindow* window);
-
-    /* Handles per-frame update */
-    void update();
 
     /* Determines whether the given key was pressed this frame */
     bool is_pressed(int key);
 
     /* Appends callback to cursor position change */
-    void append_cursor_pos_callback(CursorPosCallback callback);
+    void append_cursor_pos_callback(GlfwCursorPosCallback callback);
 
     /* Appends callback to key input */
-    void append_key_callback(KeyCallback callback);
+    void append_key_callback(GlfwKeyCallback callback);
 }
 
-#endif //WATERENGINE_INPUT_H
+#endif //WATERENGINE_GLFW_INPUT_H

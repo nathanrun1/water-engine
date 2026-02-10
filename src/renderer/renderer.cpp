@@ -9,6 +9,7 @@
 #include "renderer/texture2d.h"
 #include "renderer/vertex.h"
 #include "world/transform.h"
+#include "world/world.h"
 #include "world/camera/camera.h"
 
 // Cur implementation:
@@ -17,12 +18,11 @@
 namespace Renderer {
     std::map<std::string, ShaderProgram> g_availablePrograms;
     ShaderProgram* g_activeProgram;
-    Camera g_camera;
     unsigned int g_meshVAO;
     unsigned int g_meshVBO;
     unsigned int g_meshEBO;
 
-    std::vector<vertex> vertices = {
+    std::vector<Vertex> vertices = {
         {{-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f}},
         {{ 0.5f, -0.5f, 0.0f}, {1.0f, 0.0f}},
         {{-0.5f,  0.5f, 0.0f}, {0.0f, 1.0f}},
@@ -49,17 +49,17 @@ namespace Renderer {
         glGenBuffers(1, &g_meshEBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g_meshEBO);
 
-        for (const VertexAttributeDesc& desc : vertex::layout) {
-            glVertexAttribPointer(desc.index, desc.size, desc.type, GL_FALSE, sizeof(vertex), (void*)desc.offset);
+        for (const VertexAttributeDesc& desc : Vertex::layout) {
+            glVertexAttribPointer(desc.index, desc.size, desc.type, GL_FALSE, sizeof(Vertex), (void*)desc.offset);
             glEnableVertexAttribArray(desc.index);
         }
     }
 
     /* Loads model data into currently bound VBO and EBO */
     void _load_models() {
-        std::span<const vertex> modelVertices = Assets::get_all_mesh_vertices();
+        std::span<const Vertex> modelVertices = Assets::get_all_mesh_vertices();
         std::span<const unsigned int> modelIndices = Assets::get_all_mesh_indices();
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertex) * modelVertices.size(), modelVertices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * modelVertices.size(), modelVertices.data(), GL_STATIC_DRAW);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * modelIndices.size(), modelIndices.data(), GL_STATIC_DRAW);
     }
 
@@ -79,18 +79,16 @@ namespace Renderer {
 
         _init_model_buffers();
         _load_models();
-
-        g_camera = Camera(Transform{{0.0f, 0.0f, 3.0f}});
         
         glEnable(GL_DEPTH_TEST);
     }
 
     void begin_draw() {
-        glm::vec4 bg_color = g_camera.get_background_color();
+        glm::vec4 bg_color = World::get_main_camera().get_background_color();
         glClearColor(bg_color.r, bg_color.g, bg_color.b, bg_color.a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        g_activeProgram->setMat4("u_VP", g_camera.get_vp_matrix());
+        g_activeProgram->setMat4("u_VP", World::get_main_camera().get_vp_matrix());
     }
 
     void draw_mesh_with_transform(const Assets::Mesh& model, const Transform& transform) {

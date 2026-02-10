@@ -85,4 +85,8 @@ namespace GLFW {
     void add_frame_buffer_size_callback(const FrameBufferSizeCallback& callback) {
         g_frameBufferSizeCallbacks.push_back(callback);
     }
+
+    double get_time() {
+        return glfwGetTime();
+    }
 }

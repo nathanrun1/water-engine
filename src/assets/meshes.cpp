@@ -4,17 +4,17 @@ namespace Assets {
     /* References to range of vertex and index data of a mesh */
     struct MeshRange {
         /* The mesh's vertices */
-        std::span<const vertex> vertices;
+        std::span<const Vertex> vertices;
 
         /* Indices referring to the mesh's vertices, in the desired draw order */
         std::span<const unsigned int> indices;
     };
 
-    std::vector<vertex> g_meshVertices;
+    std::vector<Vertex> g_meshVertices;
     std::vector<unsigned int> g_meshIndices;
     std::unordered_map<unsigned int, MeshRange> g_meshRanges;
 
-    const Mesh create_mesh(const std::vector<vertex>& vertices, std::vector<unsigned int>& indices) {
+    const Mesh create_mesh(const std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
         const Mesh newMesh = Mesh(g_meshRanges.size());
 
         unsigned int vertexOffset = g_meshVertices.size();
@@ -23,7 +23,7 @@ namespace Assets {
         g_meshVertices.insert(g_meshVertices.end(), vertices.begin(), vertices.end());
         g_meshIndices.insert(g_meshIndices.end(), indices.begin(), indices.end());
 
-        std::span<const vertex> fullVertexSpan(g_meshVertices);
+        std::span<const Vertex> fullVertexSpan(g_meshVertices);
         std::span<const unsigned int> fullIndexSpan(g_meshIndices);
 
         MeshRange newMeshRange(
@@ -35,7 +35,7 @@ namespace Assets {
         return newMesh;
     }
 
-    std::span<const vertex> get_mesh_vertices(const Mesh &mesh) {
+    std::span<const Vertex> get_mesh_vertices(const Mesh &mesh) {
         return g_meshRanges[mesh.id].vertices;
     }
 
@@ -43,7 +43,7 @@ namespace Assets {
         return g_meshRanges[mesh.id].indices;
     }
 
-    std::span<const vertex> get_all_mesh_vertices() {
+    std::span<const Vertex> get_all_mesh_vertices() {
         return std::span(g_meshVertices);
     }
 
