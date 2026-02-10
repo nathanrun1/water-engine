@@ -281,5 +281,37 @@ static const std::unordered_map<int, Key> from_glfw_key = {
     { GLFW_KEY_MENU,          Key::Menu },
 };
 
+static const std::unordered_map<MouseButton, int> to_glfw_mouse_button = {
+    { MouseButton::M1,     GLFW_MOUSE_BUTTON_1 },
+    { MouseButton::M2,     GLFW_MOUSE_BUTTON_2 },
+    { MouseButton::M3,     GLFW_MOUSE_BUTTON_3 },
+    { MouseButton::M4,     GLFW_MOUSE_BUTTON_4 },
+    { MouseButton::M5,     GLFW_MOUSE_BUTTON_5 },
+    { MouseButton::M6,     GLFW_MOUSE_BUTTON_6 },
+    { MouseButton::M7,     GLFW_MOUSE_BUTTON_7 },
+    { MouseButton::M8,     GLFW_MOUSE_BUTTON_8 },
+
+    { MouseButton::Left,   GLFW_MOUSE_BUTTON_LEFT }, 
+    { MouseButton::Right,  GLFW_MOUSE_BUTTON_RIGHT }, 
+    { MouseButton::Middle, GLFW_MOUSE_BUTTON_MIDDLE }, 
+    { MouseButton::Last,   GLFW_MOUSE_BUTTON_LAST }, 
+};
+
+static const std::unordered_map<int, MouseButton> from_glfw_mouse_button = {
+    { GLFW_MOUSE_BUTTON_1,      MouseButton::M1 },
+    { GLFW_MOUSE_BUTTON_2,      MouseButton::M2 },
+    { GLFW_MOUSE_BUTTON_3,      MouseButton::M3 },
+    { GLFW_MOUSE_BUTTON_4,      MouseButton::M4 },
+    { GLFW_MOUSE_BUTTON_5,      MouseButton::M5 },
+    { GLFW_MOUSE_BUTTON_6,      MouseButton::M6 },
+    { GLFW_MOUSE_BUTTON_7,      MouseButton::M7 },
+    { GLFW_MOUSE_BUTTON_8,      MouseButton::M8 },
+
+    { GLFW_MOUSE_BUTTON_LEFT,   MouseButton::Left },
+    { GLFW_MOUSE_BUTTON_RIGHT,  MouseButton::Right },
+    { GLFW_MOUSE_BUTTON_MIDDLE, MouseButton::Middle },
+    { GLFW_MOUSE_BUTTON_LAST,   MouseButton::Last },
+};
+
 
 #endif //WATERENGINE_GLFW_KEYS_H

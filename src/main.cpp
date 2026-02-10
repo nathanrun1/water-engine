@@ -6,6 +6,8 @@
 
 #include "renderer/renderer.h"
 #include "backend/glfw_backend.h"
+#include "backend/glfw_input.h"
+#include "input/enums.h"
 #include "world/transform.h"
 #include "world/update_registry.h"
 #include "world/world.h"
@@ -15,6 +17,8 @@
 // X Geometry batching
 //   - Vertex deduplication
 // - Instancing
+
+using namespace Input;
 
 Vertex cubeVertices[] = {
     {{-0.5f, -0.5f, -0.5f,}, {0.0f, 0.0f}},
@@ -72,6 +76,17 @@ glm::vec3 cubePositions[] = {
     glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
+void key_callback(Key key, Action action) {
+    if (key == Key::Escape && action == Action::Press) {
+        GLFW::Input::set_focus_cursor(false);
+    }
+}
+
+void mouse_callback(MouseButton mouse_button, Action action) {
+    if (!ImGui::GetIO().WantCaptureMouse && mouse_button == MouseButton::M1 && action == Action::Press)
+        GLFW::Input::set_focus_cursor(true);
+}
+
 int main() {
     GLFW::set_window_width(1600);
     GLFW::set_window_height(1200);
@@ -80,6 +95,10 @@ int main() {
     ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(GLFW::get_window_ptr(), true);
     ImGui_ImplOpenGL3_Init();
+    
+    Input::set_cursor_mode(CursorMode::GAME);
+    Input::append_key_callback(key_callback);
+    Input::append_mouse_button_callback(mouse_callback);
 
     std::vector<Vertex> vertices(std::begin(cubeVertices), std::end(cubeVertices));
     std::vector<unsigned int> indices(std::begin(cubeIndices), std::end(cubeIndices));
