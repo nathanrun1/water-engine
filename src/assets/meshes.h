@@ -11,7 +11,7 @@ namespace Assets {
     };
 
     /* Creates the mesh from the given vertices and indices */
-    Mesh create_mesh(const std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
+    Mesh create_mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 
     /* Retrieve a reference to the given mesh's vertices */
     std::span<const Vertex> get_mesh_vertices(const Mesh& mesh);
