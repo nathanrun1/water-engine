@@ -51,6 +51,7 @@ add_executable(waterengine
         src/assets/materials.cpp
         src/world/lighting.h
         src/world/lighting.cpp
+        src/renderer/u_blocks.h
 )
 
 target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb deps/spdlog/include deps/imgui)

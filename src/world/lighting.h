@@ -7,8 +7,8 @@
 
 namespace World {
     enum class LightType {
-        Point,
-        Directional
+        Point = 0,
+        Directional = 1
     };
 
     struct Light {

@@ -5,6 +5,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/io.hpp>
 
+#include "u_blocks.h"
 #include "assets/materials.h"
 #include "backend/glfw_backend.h"
 #include "deprecated/texture2d.h"
@@ -24,6 +25,8 @@ namespace Renderer {
     unsigned int g_meshEBO;
 
     unsigned int g_albedo_array;
+
+    unsigned int g_lightingUBO;
 
     std::vector<Vertex> vertices = {
         {{-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f}},
@@ -73,7 +76,7 @@ namespace Renderer {
         }
     }
 
-    /* Loads model data into currently bound VBO and EBO */
+    /* Load model data into currently bound VBO and EBO */
     void _load_models() {
         std::span<const Vertex> modelVertices = Assets::get_all_mesh_vertices();
         std::span<const unsigned int> modelIndices = Assets::get_all_mesh_indices();
@@ -89,7 +92,7 @@ namespace Renderer {
         glBindTexture(GL_TEXTURE_2D_ARRAY, g_albedo_array);
     }
 
-    /* Initializes and binds material texture arrays */
+    /* Load texture data */
     void _load_textures() {
         glActiveTexture(GL_TEXTURE0); // Albedos in unit 0 TODO: don't hardcode this
 
@@ -113,6 +116,25 @@ namespace Renderer {
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);  // When texel:pixel ratio is high (above 1), texture is downscaled/minified, and we decide to use nearest filtering
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   // When texel:pixel ratio is low (below 1), texture is upscaled/magnified, and we decide to use bilinear filtering
+    }
+
+    /* Initializes lighting buffers */
+    void _init_lights() {
+        glGenBuffers(1, &g_lightingUBO);
+    }
+
+    /* Load lighting data */
+    void _load_lights() {
+        UBLighting lighting_block;
+        std::span<const World::Light> lights = World::get_all_lights();
+        for (int i = 0; i < lights.size(); ++i) {
+            lighting_block.lights[i] = UBLight(lights[i]);
+        }
+        lighting_block.num_lights = lights.size();
+
+
+        glBindBuffer(GL_UNIFORM_BUFFER, g_lightingUBO);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(UBLighting), &lighting_block, GL_STATIC_DRAW);
     }
 
 
