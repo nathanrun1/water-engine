@@ -9,7 +9,7 @@ namespace Assets {
     Material create_material(const Texture2D& albedo) {
         Material mat(g_mat_albedos.size());
 
-        if (g_mat_albedos[0].same_dimensions(albedo)) {
+        if (!g_mat_albedos.empty() && !g_mat_albedos[0].same_dimensions(albedo)) {
             throw material_error("Failed to create material " + std::to_string(mat.id) + ", albedo texture dimensions differ from others.");
         }
         g_mat_albedos.push_back(albedo);

@@ -101,12 +101,13 @@ int main() {
     Input::append_mouse_button_callback(mouse_callback);
 
     // Assets
-    std::vector<Vertex> vertices(std::begin(cubeVertices), std::end(cubeVertices));
-    std::vector<unsigned int> indices(std::begin(cubeIndices), std::end(cubeIndices));
+    std::vector vertices(std::begin(cubeVertices), std::end(cubeVertices));
+    std::vector indices(std::begin(cubeIndices), std::end(cubeIndices));
     Assets::Mesh cube = Assets::create_mesh(vertices, indices);
 
+    Assets::Texture2D awesomeface = Assets::create_texture2d("res/textures/awesomeface.png");
     Assets::Texture2D container = Assets::create_texture2d("res/textures/container.jpg");
-    Assets::Material material = Assets::create_material(container);
+    Assets::Material material2 = Assets::create_material(awesomeface);
 
     World::init();
     Renderer::init();
@@ -125,7 +126,7 @@ int main() {
             transform.position = pos;
             transform.set_euler_angles(0.0f, glfwGetTime() * glm::radians(90.0f), 0.0f);
             transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
-            Renderer::draw_mesh(cube, transform, material);
+            Renderer::draw_mesh(cube, transform, material2);
         }
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
