@@ -1,9 +1,9 @@
 ﻿#ifndef WATERENGINE_TEXTURES_H
 #define WATERENGINE_TEXTURES_H
 
+#include <span>
 #include <string>
 #include <stdexcept>
-#include <GLAD/glad.h>
 
 namespace Assets {
     class texture_error : public std::runtime_error {
@@ -28,9 +28,9 @@ namespace Assets {
         }
     };
 
-    Texture2D create_texture2d(const std::string& texturePath);
+    Texture2D create_texture2d(const std::string& texture_path);
 
-    const std::byte* get_texture_data(const Texture2D& texture_2d);
+    std::span<const std::byte> get_texture_data(const Texture2D& texture_2d);
 }
 
 #endif //WATERENGINE_TEXTURES_H

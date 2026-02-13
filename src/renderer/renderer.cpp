@@ -84,6 +84,7 @@ namespace Renderer {
     /* Initializes and binds texture arrays */
     void _init_textures() {
         // Albedo textures
+        std::cout << "initializing textures...\n";
         glGenTextures(1, &g_albedo_array);
         glActiveTexture(GL_TEXTURE0); // Albedos in unit 0 TODO: don't hardcode this
         glBindTexture(GL_TEXTURE_2D_ARRAY, g_albedo_array);
@@ -94,16 +95,19 @@ namespace Renderer {
         glActiveTexture(GL_TEXTURE0); // Albedos in unit 0 TODO: don't hardcode this
 
         std::span<const Assets::Texture2D> albedos = Assets::get_all_albedos();
+        std::cout << "loading " << albedos.size() << " albedo textures...\n";
 
-        unsigned int width, height, n_channels, format;
-        width = albedos[0].width;
-        height = albedos[0].height;
-        n_channels = albedos[0].n_channels;
-        format = _texture_format(n_channels);
+        unsigned int width = albedos[0].width;
+        unsigned int height = albedos[0].height;
+        unsigned int n_channels = albedos[0].n_channels;
+        unsigned int format = _texture_format(n_channels);
+        
+        
         glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, width, height,
             albedos.size(), 0, format, GL_UNSIGNED_BYTE, nullptr);
         for (size_t mat = 0; mat < albedos.size(); ++mat) {
-            const std::byte* data = Assets::get_texture_data(albedos[mat]);
+            const std::byte* data = Assets::get_texture_data(albedos[mat]).data();
+            std::cout << static_cast<int>(data[0]) << std::endl;
             glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, mat, width, height, 1,
                 format, GL_UNSIGNED_BYTE, data);
         }
