@@ -17,13 +17,13 @@ namespace Assets {
         unsigned int height;
         unsigned int n_channels;
 
-        inline bool same_dimensions(const Texture2D& other) {
+        [[nodiscard]] bool same_dimensions(const Texture2D& other) const {
             return width == other.width
                 && height == other.height
                 && n_channels == other.n_channels;
         }
 
-        inline size_t size() {
+        [[nodiscard]] size_t size() const {
             return width * height * n_channels;
         }
     };
