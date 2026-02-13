@@ -84,7 +84,6 @@ namespace Renderer {
     /* Initializes and binds texture arrays */
     void _init_textures() {
         // Albedo textures
-        std::cout << "initializing textures...\n";
         glGenTextures(1, &g_albedo_array);
         glActiveTexture(GL_TEXTURE0); // Albedos in unit 0 TODO: don't hardcode this
         glBindTexture(GL_TEXTURE_2D_ARRAY, g_albedo_array);
@@ -95,7 +94,6 @@ namespace Renderer {
         glActiveTexture(GL_TEXTURE0); // Albedos in unit 0 TODO: don't hardcode this
 
         std::span<const Assets::Texture2D> albedos = Assets::get_all_albedos();
-        std::cout << "loading " << albedos.size() << " albedo textures...\n";
 
         unsigned int width = albedos[0].width;
         unsigned int height = albedos[0].height;
@@ -107,7 +105,6 @@ namespace Renderer {
             albedos.size(), 0, format, GL_UNSIGNED_BYTE, nullptr);
         for (size_t mat = 0; mat < albedos.size(); ++mat) {
             const std::byte* data = Assets::get_texture_data(albedos[mat]).data();
-            std::cout << static_cast<int>(data[0]) << std::endl;
             glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, mat, width, height, 1,
                 format, GL_UNSIGNED_BYTE, data);
         }
@@ -146,18 +143,18 @@ namespace Renderer {
         g_activeProgram->set_mat4("uVP", World::get_main_camera().get_vp_matrix());
     }
 
-    void draw_mesh(const Assets::Mesh& model, const Transform& transform, const Assets::Material& material) {
+    void draw_mesh(const Assets::Mesh& mesh, const Transform& transform, const Assets::Material& material) {
         g_activeProgram->set_mat4("uModel", transform.get_matrix());
         g_activeProgram->set_uint("uMaterial", material.id);
 
-        std::span<const unsigned int> modelIndices = Assets::get_mesh_indices(model);
+        std::span<const unsigned int> modelIndices = Assets::get_mesh_indices(mesh);
         size_t indicesOffset = (modelIndices.begin() - Assets::get_all_mesh_indices().begin()) * sizeof(unsigned int);
 
         glDrawElements(GL_TRIANGLES, modelIndices.size(), GL_UNSIGNED_INT, (void*)(indicesOffset));
     }
 
     void create_program(const std::string &programId, const ShaderProgramInfo &programInfo) {
-        g_availablePrograms.emplace(programId, std::move(ShaderProgram(programInfo)));
+        g_availablePrograms.emplace(programId, ShaderProgram(programInfo));
     }
 
     void use_program(const std::string &programId) {
@@ -165,7 +162,7 @@ namespace Renderer {
             ShaderProgram& program = g_availablePrograms.at(programId);
             program.use();
             g_activeProgram = &program;
-        } catch (std::out_of_range) {
+        } catch (std::out_of_range&) {
             throw std::runtime_error("No shader program of id: " + programId);
         }
     }

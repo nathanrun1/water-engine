@@ -16,7 +16,7 @@ namespace Renderer {
     void begin_draw();
 
     /* Draws the given mesh */
-    void draw_mesh(const Assets::Mesh& model, const Transform& position, const Assets::Material& material);
+    void draw_mesh(const Assets::Mesh& mesh, const Transform& transform, const Assets::Material& material);
 
     /* Creates shader program from given shaders and adds it to available program list */
     void create_program(const std::string& programId, const ShaderProgramInfo &programInfo);

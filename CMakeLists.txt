@@ -49,6 +49,8 @@ add_executable(waterengine
         src/assets/textures_2d.cpp
         src/assets/materials.h
         src/assets/materials.cpp
+        src/world/lighting.h
+        src/world/lighting.cpp
 )
 
 target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb deps/spdlog/include deps/imgui)
