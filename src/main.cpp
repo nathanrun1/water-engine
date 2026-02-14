@@ -105,9 +105,8 @@ int main() {
     std::vector indices(std::begin(cubeIndices), std::end(cubeIndices));
     Assets::Mesh cube = Assets::create_mesh(vertices, indices);
 
-    Assets::Texture2D awesomeface = Assets::create_texture2d("res/textures/awesomeface.png");
     Assets::Texture2D container = Assets::create_texture2d("res/textures/container.jpg");
-    Assets::Material material2 = Assets::create_material(awesomeface);
+    Assets::Material material2 = Assets::create_material(container);
 
     World::init();
     Renderer::init();

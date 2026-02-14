@@ -37,7 +37,6 @@ namespace Input {
     void _set_cursor_gui() {
         GLFW::Input::set_focus_cursor(false);
         ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
-        std::cout << (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_NoMouse) << '\n';
     }
     
     void set_cursor_mode(const CursorMode& cursor_mode) {
