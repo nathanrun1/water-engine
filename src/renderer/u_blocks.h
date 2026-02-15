@@ -7,11 +7,11 @@
 namespace Renderer {
     constexpr size_t MAX_LIGHTS = 8;
 
-    struct alignas(16) UBLight {                       // alignment            offset    total: 40
-        alignas(16) glm::vec3 position;    // 16                   0
-        alignas(16) glm::vec3 color;       // 16                   16
-        alignas(4)  unsigned int type;     // 4                    32
-        alignas(4)  float intensity;       // 4                    36
+    struct alignas(16) UBLight {
+        alignas(16) glm::vec3 position;
+        alignas(16) glm::vec3 color;
+        alignas(4)  unsigned int type;
+        alignas(4)  float intensity;
         
         UBLight() = default;
 

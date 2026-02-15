@@ -9,8 +9,8 @@
 
 struct Light {
     vec3 position;
-    uint type;
     vec3 color;
+    uint type;
     float intensity;
 };
 
@@ -37,7 +37,7 @@ void main() {
         vec3 irradiance = light.color * light.intensity;
         irradiance *= light.type == LTYPE_AMBIENT ? 1.0f : dot(normal, light_dir);
         
-        irradiance = dot(normal, normalize(lights[i].position - fragPos)) * light.color; // TODO: adding intensity breaks it
+        irradiance = dot(normal, normalize(lights[i].position - fragPos)) * light.intensity * light.color;
         total_irradiance += irradiance;
     }
     fragColor = vec4(total_irradiance, 1.0) * texture(uAlbedoArray, vec3(texCoord, uMaterial));
