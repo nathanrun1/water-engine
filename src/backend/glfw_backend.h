@@ -1,5 +1,5 @@
-﻿#ifndef WATERENGINE_GLFW_H
-#define WATERENGINE_GLFW_H
+﻿#ifndef WATERENGINE_GLFW_BACKEND_H
+#define WATERENGINE_GLFW_BACKEND_H
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -50,4 +50,4 @@ namespace GLFW {
     double get_time();
 }
 
-#endif //WATERENGINE_GLFW_H
+#endif //WATERENGINE_GLFW_BACKEND_H

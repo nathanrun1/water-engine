@@ -1,5 +1,5 @@
-﻿#ifndef WATERENGINE_KEYS_H
-#define WATERENGINE_KEYS_H
+﻿#ifndef WATERENGINE_ENUMS_H
+#define WATERENGINE_ENUMS_H
 
 #include <unordered_map>
 
@@ -138,4 +138,4 @@ namespace std {
 
 
 
-#endif //WATERENGINE_KEYS_H
+#endif //WATERENGINE_ENUMS_H

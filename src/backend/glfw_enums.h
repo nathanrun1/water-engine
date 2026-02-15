@@ -1,5 +1,5 @@
-﻿#ifndef WATERENGINE_GLFW_KEYS_H
-#define WATERENGINE_GLFW_KEYS_H
+﻿#ifndef WATERENGINE_GLFW_ENUMS_H
+#define WATERENGINE_GLFW_ENUMS_H
 
 #include <GLFW/glfw3.h>
 
@@ -314,4 +314,4 @@ static const std::unordered_map<int, MouseButton> from_glfw_mouse_button = {
 };
 
 
-#endif //WATERENGINE_GLFW_KEYS_H
+#endif //WATERENGINE_GLFW_ENUMS_H

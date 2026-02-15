@@ -111,7 +111,9 @@ int main() {
     Assets::Mesh cube = Assets::create_mesh(vertices, indices);
 
     Assets::Texture2D container = Assets::create_texture2d("res/textures/container.jpg");
-    Assets::Material material2 = Assets::create_material(container);
+    Assets::MaterialInfo material_info{};
+    material_info.albedo_map = container;
+    Assets::Material material2 = Assets::create_material(material_info);
     
     // Lights
     World::add_light(World::Light{

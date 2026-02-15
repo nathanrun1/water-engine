@@ -14,18 +14,29 @@ struct Light {
     float intensity;
 };
 
+layout (std140, binding = 0) uniform LightBlock {
+    uint num_lights;
+    Light lights[MAX_LIGHTS];
+};
+
+layout (std140, binding = 1) uniform Material {
+    uint albedoId;
+    uint roughnessId;
+    uint metallicId;
+    uint normalId;
+
+    vec3 albedoScale;
+    float roughnessScale;
+    float metallicScale;
+} uMaterial;
+
+layout (binding = 0) uniform sampler2DArray uMaterialMapArray;
+
 in vec2 texCoord;
 in vec3 normal;
 in vec3 fragPos;
 
 out vec4 fragColor;
-
-layout (binding = 0) uniform sampler2DArray uAlbedoArray;
-uniform uint uMaterial;
-layout (std140, binding = 0) uniform LightBlock {
-    uint num_lights;
-    Light lights[MAX_LIGHTS];
-};
 
 void main() {
     vec3 total_irradiance = vec3(0.0);
@@ -40,5 +51,6 @@ void main() {
         irradiance = dot(normal, normalize(lights[i].position - fragPos)) * light.intensity * light.color;
         total_irradiance += irradiance;
     }
-    fragColor = vec4(total_irradiance, 1.0) * texture(uAlbedoArray, vec3(texCoord, uMaterial));
+    //fragColor = vec4(uMaterial.albedoScale, 1.0); // testing
+    fragColor = vec4(total_irradiance, 1.0) * texture(uMaterialMapArray, vec3(texCoord, uMaterial.albedoId)) * vec4(uMaterial.albedoScale, 1.0);
 }

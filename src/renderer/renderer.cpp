@@ -24,9 +24,10 @@ namespace Renderer {
     unsigned int g_meshVBO;
     unsigned int g_meshEBO;
 
-    unsigned int g_albedo_array;
+    unsigned int g_material_map_array;
 
     unsigned int g_lightingUBO;
+    unsigned int g_materialUBO;
 
     std::vector<Vertex> vertices = {
         {{-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f}},
@@ -41,7 +42,7 @@ namespace Renderer {
     };
 
 
-    unsigned int _texture_format(int n_channels) {
+    unsigned int _texture_format(const int n_channels) {
         switch (n_channels) {
             case 1:
                 return GL_RED;
@@ -86,28 +87,28 @@ namespace Renderer {
 
     /* Initializes and binds texture arrays */
     void _init_textures() {
-        // Albedo textures
-        glGenTextures(1, &g_albedo_array);
-        glActiveTexture(GL_TEXTURE0); // Albedos in unit 0 TODO: don't hardcode this
-        glBindTexture(GL_TEXTURE_2D_ARRAY, g_albedo_array);
+        // Material maps
+        glGenTextures(1, &g_material_map_array);
+        glActiveTexture(GL_TEXTURE0); // Material maps in unit 0 TODO: don't hardcode this
+        glBindTexture(GL_TEXTURE_2D_ARRAY, g_material_map_array);
     }
 
     /* Load texture data */
     void _load_textures() {
-        glActiveTexture(GL_TEXTURE0); // Albedos in unit 0 TODO: don't hardcode this
+        glActiveTexture(GL_TEXTURE0); // Material maps in unit 0 TODO: don't hardcode this
 
-        std::span<const Assets::Texture2D> albedos = Assets::get_all_albedos();
+        std::span<const Assets::Texture2D> material_maps = Assets::get_all_material_maps();
 
-        unsigned int width = albedos[0].width;
-        unsigned int height = albedos[0].height;
-        unsigned int n_channels = albedos[0].n_channels;
+        unsigned int width = material_maps[0].width;
+        unsigned int height = material_maps[0].height;
+        unsigned int n_channels = material_maps[0].n_channels;
         unsigned int format = _texture_format(n_channels);
         
         
         glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, width, height,
-            albedos.size(), 0, format, GL_UNSIGNED_BYTE, nullptr);
-        for (size_t mat = 0; mat < albedos.size(); ++mat) {
-            const std::byte* data = Assets::get_texture_data(albedos[mat]).data();
+            material_maps.size(), 0, format, GL_UNSIGNED_BYTE, nullptr);
+        for (size_t mat = 0; mat < material_maps.size(); ++mat) {
+            const std::byte* data = Assets::get_texture_data(material_maps[mat]).data();
             glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, mat, width, height, 1,
                 format, GL_UNSIGNED_BYTE, data);
         }
@@ -138,6 +139,19 @@ namespace Renderer {
         glBufferData(GL_UNIFORM_BUFFER, sizeof(UBLighting), &lighting_block, GL_STATIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, 0, g_lightingUBO);  // bind the UBO to UBO binding 0, referred to in shader with `binding = 0`
     }
+    
+    /* Initializes material buffer */
+    void _init_materials() {
+        glGenBuffers(1, &g_materialUBO);
+    }
+    
+    void _load_material(const Assets::Material& material) {
+        UBMaterial ub_material{material};
+        
+        glBindBuffer(GL_UNIFORM_BUFFER, g_materialUBO);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(UBMaterial), &ub_material, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 1, g_materialUBO);  // Bind material UBO to binding 1
+    }
 
 
     void init() {
@@ -159,6 +173,8 @@ namespace Renderer {
         _init_lights();
         _load_lights();
         
+        _init_materials();
+        
         glEnable(GL_DEPTH_TEST);
     }
 
@@ -172,12 +188,12 @@ namespace Renderer {
 
     void draw_mesh(const Assets::Mesh& mesh, const Transform& transform, const Assets::Material& material) {
         g_activeProgram->set_mat4("uModel", transform.get_matrix());
-        g_activeProgram->set_uint("uMaterial", material.id);
+        _load_material(material);
 
         std::span<const unsigned int> modelIndices = Assets::get_mesh_indices(mesh);
         size_t indicesOffset = (modelIndices.begin() - Assets::get_all_mesh_indices().begin()) * sizeof(unsigned int);
 
-        glDrawElements(GL_TRIANGLES, modelIndices.size(), GL_UNSIGNED_INT, (void*)(indicesOffset));
+        glDrawElements(GL_TRIANGLES, modelIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<void *>(indicesOffset));
     }
 
     void create_program(const std::string &programId, const ShaderProgramInfo &programInfo) {

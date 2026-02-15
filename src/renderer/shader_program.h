@@ -1,5 +1,5 @@
-﻿#ifndef WATERENGINE_SHADERPROGRAM_H
-#define WATERENGINE_SHADERPROGRAM_H
+﻿#ifndef WATERENGINE_SHADER_PROGRAM_H
+#define WATERENGINE_SHADER_PROGRAM_H
 #include <string>
 #include <stdexcept>
 
@@ -25,16 +25,16 @@ public:
     ShaderProgram(const ShaderProgramInfo& info);
 
     /* Set this as the active shader program */
-    void use();
+    void use() const;
 
-    void set_int(const std::string& uniform, const int& value);
-    void set_mat4(const std::string& uniform, const glm::mat4& value, const GLboolean transpose = GL_FALSE);
-    void set_uint(const std::string& uniform, const unsigned int& value);
+    void set_int(const std::string& uniform, const int& value) const;
+    void set_mat4(const std::string& uniform, const glm::mat4& value, const GLboolean transpose = GL_FALSE) const;
+    void set_uint(const std::string& uniform, const unsigned int& value) const;
 
     /* Retrieve the shader program's id */
-    unsigned int get_id();
+    unsigned int get_id() const;
 private:
     unsigned int m_id;
 };
 
-#endif //WATERENGINE_SHADERPROGRAM_H
+#endif //WATERENGINE_SHADER_PROGRAM_H

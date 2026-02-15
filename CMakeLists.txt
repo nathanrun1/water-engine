@@ -6,23 +6,28 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(deps/glfw)
 
 file(GLOB_RECURSE LOCAL_SRC CONFIGURE_DEPENDS
-        "src/assets/meshes.cpp"
+        src/assets/meshes.cpp
+        src/assets/materials.cpp
+        src/assets/texture2ds.cpp
         
-        "src/backend/glfw_backend.cpp"
-        "src/backend/glfw_input.cpp"
+        src/backend/glfw_backend.cpp
+        src/backend/glfw_input.cpp
+        src/backend/glfw_enums.h
         
-        "src/input/input.cpp"
+        src/input/input.cpp
+        src/input/enums.h
         
-        "src/renderer/renderer.cpp"
-        "src/renderer/shader_program.cpp"
-        "src/deprecated/texture2d.cpp"
+        src/renderer/renderer.cpp
+        src/renderer/shader_program.cpp
+        src/deprecated/texture2d.cpp
         
-        "src/world/camera/camera.cpp"
-        "src/world/transform.cpp"
-        "src/world/update_registry.cpp"
-        "src/world/world.cpp"
+        src/world/camera/camera.cpp
+        src/world/transform.cpp
+        src/world/update_registry.cpp
+        src/world/world.cpp
+        src/world/lighting.cpp
         
-        "src/main.cpp"
+        src/main.cpp
 )
 file(GLOB IMGUI_SRC CONFIGURE_DEPENDS 
         "deps/imgui/imgui.cpp"
@@ -41,17 +46,6 @@ add_executable(waterengine
         
         ${IMGUI_SRC}
         ${LOCAL_SRC}
-        src/input/enums.h
-        src/backend/glfw_enums.h
-        src/input/input.h
-        src/input/input.cpp
-        src/assets/textures_2d.h
-        src/assets/textures_2d.cpp
-        src/assets/materials.h
-        src/assets/materials.cpp
-        src/world/lighting.h
-        src/world/lighting.cpp
-        src/renderer/u_blocks.h
 )
 
 target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb deps/spdlog/include deps/imgui)
