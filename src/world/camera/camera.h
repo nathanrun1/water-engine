@@ -34,7 +34,7 @@ struct Camera {
     /* Retrieves the camera's vertical FOV, in radians */
     [[nodiscard]] float get_fovy() const;
 private:
-    glm::vec4 m_background_color = glm::vec4(0.2f, 0.3f, 0.3f, 1.0f);
+    glm::vec4 m_background_color = glm::vec4(0.2f, 0.25f, 0.3f, 1.0f);
     /* Vertical FOV, in radians */
     float m_fovy = glm::radians(90.0f);
     float m_near = 0.1f;

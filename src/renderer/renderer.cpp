@@ -128,6 +128,7 @@ namespace Renderer {
         UBLighting lighting_block;
         std::span<const World::Light> lights = World::get_all_lights();
         for (int i = 0; i < lights.size(); ++i) {
+            std::cout << "loading light " << i << '\n';
             lighting_block.lights[i] = UBLight(lights[i]);
         }
         lighting_block.num_lights = lights.size();
@@ -135,6 +136,7 @@ namespace Renderer {
 
         glBindBuffer(GL_UNIFORM_BUFFER, g_lightingUBO);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(UBLighting), &lighting_block, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 0, g_lightingUBO);  // bind the UBO to UBO binding 0, referred to in shader with `binding = 0`
     }
 
 
@@ -153,6 +155,9 @@ namespace Renderer {
 
         _init_textures();
         _load_textures();
+        
+        _init_lights();
+        _load_lights();
         
         glEnable(GL_DEPTH_TEST);
     }

@@ -6,12 +6,15 @@ layout (location = 2) in vec3 aNormal;
 
 out vec2 texCoord;
 out vec3 normal;
+out vec3 fragPos;
 
 uniform mat4 uModel;
 uniform mat4 uVP;
 
 void main() {
     gl_Position = uVP * uModel * vec4(aPos, 1.0);
+    
     texCoord = aTexCoord;
-    normal = aNormal;
+    normal = mat3(transpose(inverse(uModel))) * aNormal;
+    fragPos = vec3(uModel * vec4(aPos, 1.0));
 }

@@ -10,5 +10,4 @@ namespace World {
     std::span<const Light> get_all_lights() {
         return std::span(g_lights);
     }
-
 }

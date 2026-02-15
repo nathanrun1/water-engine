@@ -8,7 +8,8 @@
 namespace World {
     enum class LightType {
         Point = 0,
-        Directional = 1
+        Directional = 1,
+        Ambient = 2
     };
 
     struct Light {
@@ -20,6 +21,8 @@ namespace World {
 
     void add_light(const Light& light);
     std::span<const Light> get_all_lights();
+    
+    void set_ambient_light(glm::vec3 color, float intensity);
 }
 
 #endif //WATERENGINE_LIGHTING_H
