@@ -184,6 +184,7 @@ namespace Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         g_activeProgram->set_mat4("uVP", World::get_main_camera().get_vp_matrix());
+        g_activeProgram->set_vec3("uCameraPos", World::get_main_camera().transform.position);
     }
 
     void draw_mesh(const Assets::Mesh& mesh, const Transform& transform, const Assets::Material& material) {

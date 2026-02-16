@@ -13,7 +13,7 @@
 /* A Camera, representing where and at what perspective the scene is rendered from */
 struct Camera {
     Camera();
-    Camera(const Transform& transform);
+    explicit Camera(const Transform& transform);
     
     Transform transform;
 
@@ -31,7 +31,7 @@ struct Camera {
 
     /* Set the camera's vertical FOV, in radians */
     void set_fovy(float fovy);
-    /* Retrieves the camera's vertical FOV, in radians */
+    /* Retrieve the camera's vertical FOV, in radians */
     [[nodiscard]] float get_fovy() const;
 private:
     glm::vec4 m_background_color = glm::vec4(0.2f, 0.25f, 0.3f, 1.0f);
