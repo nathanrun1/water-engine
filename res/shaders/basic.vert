@@ -15,6 +15,6 @@ void main() {
     gl_Position = uVP * uModel * vec4(aPos, 1.0);
     
     texCoord = aTexCoord;
-    normal = mat3(transpose(inverse(uModel))) * aNormal;
+    normal = normalize(mat3(transpose(inverse(uModel))) * aNormal);
     fragPos = vec3(uModel * vec4(aPos, 1.0));
 }

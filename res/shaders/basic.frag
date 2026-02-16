@@ -8,6 +8,7 @@
 #define MAX_LIGHTS 8
 
 #define PI 3.1415926535897932384626433832795
+const float EPS = 0.0001;
 
 struct Light {
     vec3 position;
@@ -52,7 +53,7 @@ float D_GGXTR(float roughness, float NdotH) {
     denom = denom * (a2 - 1) + 1;
     denom = denom * denom * PI;
     
-    return a2 / denom;
+    return a2 / EPS, denom;
 }
 
 // Schlick GGX Geometry function
@@ -60,7 +61,7 @@ float D_GGXTR(float roughness, float NdotH) {
 //   masking (blocked from view).
 //   Retrieved from: https://learnopengl.com/PBR/Theory#:~:text=return%20nom%20/%20denom%3B%0A%7D-,Geometry%20function,-The%20geometry%20function
 float G_SchlickGGX(vec3 dir, float k) {
-    float NdotD = dot(normal, dir);
+    float NdotD = max(EPS, dot(normal, dir));
     return NdotD / (NdotD * (1 - k) + k);
 }
 float G_Smith(float roughness, vec3 view_dir, vec3 light_dir) {
@@ -73,7 +74,7 @@ float G_Smith(float roughness, vec3 view_dir, vec3 light_dir) {
 //   Represents specular reflectivity. That is, the portion of incoming light that is reflected, as opposed to refracted.
 //   Retrieved from: https://learnopengl.com/PBR/Theory#:~:text=return%20ggx1%20*%20ggx2%3B%0A%7D-,Fresnel%20equation,-The%20Fresnel%20equation
 vec3 F_Schlick(vec3 half_dir, vec3 view_dir, vec3 F_0) {
-    float HdotV = dot(half_dir, view_dir);
+    float HdotV = max(EPS, dot(half_dir, view_dir));
     float grazing = HdotV * HdotV;
     grazing = grazing * grazing;
     grazing = HdotV * grazing;
@@ -81,7 +82,7 @@ vec3 F_Schlick(vec3 half_dir, vec3 view_dir, vec3 F_0) {
     return grazing * (vec3(1.0) - F_0) + F_0;
 }
 
-vec3 irradiance(Light light) {
+vec3 radiance(Light light) {
     if (light.type == LTYPE_AMBIENT) {
         return light.intensity * light.color;
     }
@@ -90,29 +91,32 @@ vec3 irradiance(Light light) {
     vec3 light_dir = light.type == LTYPE_DIRECTIONAL ? light.position : light.position - fragPos;
     light_dir = normalize(light_dir);
     vec3 albedo = texture(uMaterialMapArray, vec3(texCoord, uMaterial.albedoId)).rgb * uMaterial.albedoScale;
+    vec3 irradiance = light.intensity * light.color;
+    float metallic = texture(uMaterialMapArray, vec3(texCoord, uMaterial.metallicId)).r * uMaterial.metallicScale;
     
     // Cook-Torrance specular
     vec3 half_dir = normalize(light_dir + view_dir);
     float roughness = texture(uMaterialMapArray, vec3(texCoord, uMaterial.roughnessId)).r * uMaterial.roughnessScale;
-    float NdotH = dot(normal, light_dir);
+    float NdotH = max(EPS, dot(normal, half_dir));
+    float NdotL = max(EPS, dot(normal, light_dir));
 
     float D = D_GGXTR(roughness, NdotH);
     vec3 F = F_Schlick(half_dir, view_dir, albedo);
     float G = G_Smith(roughness, view_dir, light_dir);
     vec3 nom = D * G * F;
-    float denom = 4 * dot(view_dir, normal) * NdotH;
+    float denom = 4 * max(EPS, dot(view_dir, normal)) * NdotH;
     vec3 specular = nom / denom;
     
-    vec3 diffuse = dot(normal, light_dir) * light.intensity * light.color * (1 - F) * albedo;
+    vec3 diffuse = (1 - metallic) * (1 - F) * albedo;
     diffuse /= PI;
     
-    return diffuse + specular;
+    return NdotL * (diffuse + specular) * irradiance;
 }
 
 void main() {
     vec3 total_irradiance = vec3(0.0);
     for (uint i = 0; i < num_lights; ++i) {
-        total_irradiance += irradiance(lights[i]);
+        total_irradiance += radiance(lights[i]);
     }
     //fragColor = vec4(irradiance(lights[0], view_dir), 1.0);
     fragColor = vec4(total_irradiance, 1.0);

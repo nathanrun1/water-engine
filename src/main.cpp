@@ -113,6 +113,8 @@ int main() {
     Assets::Texture2D container = Assets::create_texture2d("res/textures/container.jpg");
     Assets::MaterialInfo material_info{};
     material_info.albedo_map = container;
+    material_info.roughness_scale = 0.1;
+    material_info.metallic_scale = 0.0;
     Assets::Material material2 = Assets::create_material(material_info);
     
     // Lights
