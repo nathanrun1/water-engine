@@ -88,10 +88,6 @@ void mouse_callback(MouseButton mouse_button, Action action) {
         Input::set_cursor_mode(CursorMode::GAME);
 }
 
-void recompile() {
-    
-}
-
 int main() {
     GLFW::set_window_width(1600);
     GLFW::set_window_height(1200);
@@ -135,9 +131,8 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         ImGui::ShowDemoWindow();
-        
+        World::UpdateRegistry::run_all_callbacks();
         for (glm::vec3& pos : cubePositions) {
-            World::UpdateRegistry::run_all_callbacks();
             Transform transform;
             transform.position = pos;
             transform.set_euler_angles(0.0f, glfwGetTime() * glm::radians(90.0f), 0.0f);
