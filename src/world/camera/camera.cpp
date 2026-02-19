@@ -53,10 +53,6 @@ void Camera::set_fovy(float fovy) {
     m_fovy = fovy;
 }
 
-float d_x_offset;
-float d_y_offset;
-glm::vec3 d_initial_rot;
-glm::vec3 d_after_rot;
 void Camera::m_cursor_pos_callback(double xpos, double ypos) {
     if (m_prevCursorX < 0) {
         // Set to initial cursor positions
@@ -69,34 +65,25 @@ void Camera::m_cursor_pos_callback(double xpos, double ypos) {
     float y_offset = ypos - m_prevCursorY;
     m_prevCursorX = xpos;
     m_prevCursorY = ypos;
+
+    m_rot.y += -x_offset * m_sensitivity;
+    m_rot.y = std::fmod(m_rot.y, glm::radians(360.0f));
+    m_rot.x += -y_offset * m_sensitivity;
+    m_rot.x = std::min(glm::radians(90.0f), std::max(glm::radians(-90.0f), m_rot.x));
+    m_rot.z = 0.0f;
     
-    glm::vec3 rot = transform.get_euler_angles();
-
-    d_x_offset = x_offset;
-    d_y_offset = y_offset;
-    d_initial_rot = rot;
-
-    rot.y += -x_offset * m_sensitivity;
-    //rot.y = std::fmod(rot.y, glm::radians(360.0f));
-    rot.x += -y_offset * m_sensitivity;
-    rot.x = std::min(glm::radians(90.0f), std::max(glm::radians(-90.0f), rot.x));
-    
-    d_after_rot = rot;
-
-    transform.set_euler_angles(rot);
+    transform.set_euler_angles(m_rot);
 }
 
-void imgui_debug() {
+void imgui_debug(const Transform& transform) {
     ImGui::Begin("Camera debug");
-    ImGui::Text(("X offset: " + std::to_string(d_x_offset)).c_str());
-    ImGui::Text(("Y offset: " + std::to_string(d_y_offset)).c_str());
-    ImGui::Text(("Initial rotation" + glm::to_string(d_initial_rot)).c_str());
-    ImGui::Text(("Post rotation" + glm::to_string(d_after_rot)).c_str());
+    ImGui::Text(("Position: " + glm::to_string(transform.position)).c_str());
+    ImGui::Text(("Rotation: " + glm::to_string(glm::degrees(transform.get_euler_angles()))).c_str());
     ImGui::End();
 }
 
 void Camera::m_update(const World::FrameContext& frame_context) {
-    imgui_debug();
+    imgui_debug(transform);
     m_update_movement(frame_context.delta_time);
 }
 

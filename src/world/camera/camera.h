@@ -43,7 +43,9 @@ private:
     float m_prevCursorX = -1.0f;
     float m_prevCursorY = -1.0f;
     float m_sensitivity = 0.01f;
-    float m_speed = 1.0f;
+    glm::vec3 m_rot;
+
+    float m_speed = 3.0f;
 
     void m_cursor_pos_callback(double xpos, double ypos);
     void m_update(const World::FrameContext& frame_context);
