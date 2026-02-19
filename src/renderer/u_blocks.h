@@ -37,6 +37,8 @@ namespace Renderer {
         alignas(16) glm::vec3 albedo_scale;
         alignas(4)  float roughness_scale;
         alignas(4)  float metallic_scale;
+
+        alignas(4)  unsigned int flags;
         
         UBMaterial() = default;
         
@@ -48,6 +50,7 @@ namespace Renderer {
             , albedo_scale{material.albedo_scale}
             , roughness_scale{material.roughness_scale}
             , metallic_scale{material.metallic_scale}
+            , flags{static_cast<unsigned int>(material.flags)}
         {}
     };
 }

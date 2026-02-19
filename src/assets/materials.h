@@ -1,9 +1,10 @@
 ﻿#ifndef WATERENGINE_MATERIALS_H
 #define WATERENGINE_MATERIALS_H
 #include <span>
+#include <glm/vec3.hpp>
 
 #include "texture2ds.h"
-#include "glm/vec3.hpp"
+#include "material_flags.h"
 
 namespace Assets {
     constexpr unsigned int MATERIAL_MAP_WIDTH = 512;
@@ -24,6 +25,8 @@ namespace Assets {
         glm::vec3 albedo_scale;
         float roughness_scale;
         float metallic_scale;
+
+        MaterialFlag flags;
     };
     struct MaterialInfo {
         Texture2D albedo_map = white_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, MATERIAL_MAP_N_CHANNELS);
@@ -34,6 +37,8 @@ namespace Assets {
         glm::vec3 albedo_scale = {1.0, 1.0, 1.0};
         float roughness_scale = 1.0;
         float metallic_scale = 0.0;
+
+        MaterialFlag flags = MaterialFlag::None;
     };
 
     Material create_material(const MaterialInfo& material_info);

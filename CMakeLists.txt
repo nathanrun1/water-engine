@@ -46,6 +46,8 @@ add_executable(waterengine
         
         ${IMGUI_SRC}
         ${LOCAL_SRC}
+        src/assets/material_flags.h
+        src/utility/bitmask.h
 )
 
 target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb deps/spdlog/include deps/imgui)

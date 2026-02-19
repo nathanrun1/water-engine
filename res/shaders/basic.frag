@@ -5,6 +5,8 @@
 #define LTYPE_DIRECTIONAL 1
 #define LTYPE_AMBIENT 2
 
+#define MATERIAL_UNLIT 1
+
 #define MAX_LIGHTS 8
 
 #define PI 3.1415926535897932384626433832795
@@ -31,6 +33,8 @@ layout (std140, binding = 1) uniform Material {
     vec3 albedoScale;
     float roughnessScale;
     float metallicScale;
+
+    uint flags;
 } uMaterial;
 
 layout (binding = 0) uniform sampler2DArray uMaterialMapArray;
@@ -43,6 +47,10 @@ in vec3 normal;
 in vec3 fragPos;
 
 out vec4 fragColor;
+
+vec3 get_albedo() {
+    return texture(uMaterialMapArray, vec3(texCoord, uMaterial.albedoId)).rgb * uMaterial.albedoScale;
+}
 
 // TRGGX NDF
 //   Represents density of microfacets with normals within halfway-aligned solid angle per solid angle size per unit macrosurface area.
@@ -85,15 +93,16 @@ vec3 F_Schlick(vec3 half_dir, vec3 view_dir, vec3 albedo, float metallic) {
 }
 
 vec3 radiance(Light light) {
+    vec3 albedo = get_albedo();
+
     if (light.type == LTYPE_AMBIENT) {
-        return light.intensity * light.color;
+        return light.intensity * light.color * albedo;
     }
     
     // TODO: calculate normal with normal map, tangent space
     vec3 view_dir = normalize(uCameraPos - fragPos);
     vec3 light_dir = light.type == LTYPE_DIRECTIONAL ? light.position : light.position - fragPos;
     light_dir = normalize(light_dir);
-    vec3 albedo = texture(uMaterialMapArray, vec3(texCoord, uMaterial.albedoId)).rgb * uMaterial.albedoScale;
     vec3 irradiance = light.intensity * light.color;
     float metallic = texture(uMaterialMapArray, vec3(texCoord, uMaterial.metallicId)).r * uMaterial.metallicScale;
     
@@ -119,6 +128,11 @@ vec3 radiance(Light light) {
 }
 
 void main() {
+    if ((uMaterial.flags & MATERIAL_UNLIT) > 0) {
+        fragColor = vec4(get_albedo(), 0.0);
+        return;
+    }
+
     vec3 total_irradiance = vec3(0.0);
     for (uint i = 0; i < num_lights; ++i) {
         total_irradiance += radiance(lights[i]);

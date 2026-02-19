@@ -109,16 +109,30 @@ int main() {
     Assets::Texture2D container = Assets::create_texture2d("res/textures/container.jpg");
     Assets::MaterialInfo material_info{};
     material_info.albedo_map = container;
-    material_info.roughness_scale = 0.1;
+    material_info.roughness_scale = 0.5;
     material_info.metallic_scale = 0.0;
-    Assets::Material material2 = Assets::create_material(material_info);
-    
+    Assets::Material container_material = Assets::create_material(material_info);
+
+    Assets::MaterialInfo material_info_light{};
+    material_info_light.albedo_scale = glm::vec3(1.0);
+    material_info_light.roughness_scale = 1.0;
+    material_info_light.metallic_scale = 0.0;
+    material_info_light.flags |= Assets::MaterialFlag::Unlit;
+    Assets::Material light_material = Assets::create_material(material_info_light);
+
     // Lights
+    glm::vec3 light_pos = glm::vec3{3.0f, 5.0f, 5.0f};
     World::add_light(World::Light{
-        {3.0f, 5.0f, 5.0f},
+        light_pos,
         World::LightType::Point,
         {1.0f, 1.0f, 1.0f},
         1.0f
+    });
+    World::add_light(World::Light{
+        {0.0f, 0.0f, 0.0f},
+        World::LightType::Ambient,
+        {1.0f, 1.0f, 1.0f},
+        0.1f
     });
 
     World::init();
@@ -132,13 +146,21 @@ int main() {
         ImGui::NewFrame();
         ImGui::ShowDemoWindow();
         World::UpdateRegistry::run_all_callbacks();
+
+        // Draw containers
         for (glm::vec3& pos : cubePositions) {
             Transform transform;
             transform.position = pos;
             transform.set_euler_angles(0.0f, glfwGetTime() * glm::radians(90.0f), 0.0f);
             transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
-            Renderer::draw_mesh(cube, transform, material2);
+            Renderer::draw_mesh(cube, transform, container_material);
         }
+
+        // Draw light object
+        Transform light_transform;
+        light_transform.position = light_pos;
+        Renderer::draw_mesh(cube, light_transform, light_material);
+
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         
