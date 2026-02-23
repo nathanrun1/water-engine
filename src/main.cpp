@@ -8,6 +8,7 @@
 #include "backend/glfw_backend.h"
 #include "backend/glfw_input.h"
 #include "input/enums.h"
+#include "utility/tangent_space.h"
 #include "world/lighting.h"
 #include "world/transform.h"
 #include "world/update_registry.h"
@@ -104,6 +105,7 @@ int main() {
     // Assets
     std::vector vertices(std::begin(cubeVertices), std::end(cubeVertices));
     std::vector indices(std::begin(cubeIndices), std::end(cubeIndices));
+    calculate_tangents(vertices, indices);
     Assets::Mesh cube = Assets::create_mesh(vertices, indices);
 
     // Assets::Texture2D container = Assets::create_texture2d("res/textures/container.jpg");
@@ -158,13 +160,14 @@ int main() {
             Transform transform;
             transform.position = pos;
             //transform.set_euler_angles(0.0f, glfwGetTime() * glm::radians(90.0f), 0.0f);
-            transform.scale = glm::vec3(2.0f, 1.0f, 2awa.0f);
+            transform.scale = {2.0f, 1.0f, 2.0f};
             Renderer::draw_mesh(cube, transform, stones_material);
         }
 
         // Draw light object
         Transform light_transform;
         light_transform.position = light_pos;
+        light_transform.scale = {0.5f, 0.5f, 0.5f};
         Renderer::draw_mesh(cube, light_transform, light_material);
 
         ImGui::Render();

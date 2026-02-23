@@ -44,12 +44,19 @@ uniform vec3 uCameraPos;
 
 in vec2 texCoord;
 in vec3 normal;
+in vec3 tangent;
 in vec3 fragPos;
 
 out vec4 fragColor;
 
 vec3 get_albedo() {
     return texture(uMaterialMapArray, vec3(texCoord, uMaterial.albedoId)).rgb * uMaterial.albedoScale;
+}
+
+vec3 get_normal() {
+    vec3 bitangent = normalize(cross(normal, tangent));
+    vec3 normal_comp = texture(uMaterialMapArray, vec3(texCoord, uMaterial.normalId)).rgb;
+    return normalize(normal_comp.r * tangent + normal_comp.g * bitangent + normal_comp.b * normal);
 }
 
 // TRGGX NDF
@@ -94,6 +101,7 @@ vec3 F_Schlick(vec3 half_dir, vec3 view_dir, vec3 albedo, float metallic) {
 
 vec3 radiance(Light light) {
     vec3 albedo = get_albedo();
+    vec3 normal = get_normal();
 
     if (light.type == LTYPE_AMBIENT) {
         return light.intensity * light.color * albedo;

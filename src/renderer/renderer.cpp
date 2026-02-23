@@ -129,7 +129,6 @@ namespace Renderer {
         UBLighting lighting_block;
         std::span<const World::Light> lights = World::get_all_lights();
         for (int i = 0; i < lights.size(); ++i) {
-            std::cout << "loading light " << i << '\n';
             lighting_block.lights[i] = UBLight(lights[i]);
         }
         lighting_block.num_lights = lights.size();

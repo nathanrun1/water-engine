@@ -6,25 +6,25 @@
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 
-/* Runtime error related to OpenGL shader program initialization */
+/** Runtime error related to OpenGL shader program initialization */
 class shader_program_error : public std::runtime_error {
 public:
     explicit shader_program_error(const std::string& msg) : std::runtime_error(msg) {}
 };
 
 struct ShaderProgramInfo {
-    /* Project-relative path to vertex shader */
+    /** Project-relative path to vertex shader */
     const std::string& vertexPath;
-    /* Project-relative path to fragment shader */
+    /** Project-relative path to fragment shader */
     const std::string& fragmentPath;
 };
 
-/* Encapulates an OpenGL shader program */
+/** Encapulates an OpenGL shader program */
 class ShaderProgram {
 public:
     ShaderProgram(const ShaderProgramInfo& info);
 
-    /* Set this as the active shader program */
+    /** Set this as the active shader program */
     void use() const;
 
     void set_int(const std::string& uniform, const int& value) const;
@@ -32,7 +32,7 @@ public:
     void set_uint(const std::string& uniform, const unsigned int& value) const;
     void set_vec3(const std::string& uniform, const glm::vec3 value) const;
 
-    /* Retrieve the shader program's id */
+    /** Retrieve the shader program's id */
     unsigned int get_id() const;
 private:
     unsigned int m_id;
