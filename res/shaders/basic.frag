@@ -145,5 +145,6 @@ void main() {
     for (uint i = 0; i < num_lights; ++i) {
         total_irradiance += radiance(lights[i]);
     }
-    fragColor = vec4(total_irradiance, 1.0);
+    //fragColor = vec4(total_irradiance, 1.0);
+    fragColor = vec4(get_normal(), 1.0);
 }

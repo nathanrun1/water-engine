@@ -49,7 +49,7 @@ add_executable(waterengine
         src/assets/material_flags.h
         src/utility/bitmask.h
         src/utility/tangent_space.h
-        src/utility/tanget_space.cpp
+        src/utility/tangent_space.cpp
 )
 
 target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb deps/spdlog/include deps/imgui)

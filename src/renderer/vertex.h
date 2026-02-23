@@ -13,15 +13,17 @@ struct VertexAttributeDesc {
 
 struct Vertex {
     glm::vec3 position;
-    glm::vec2 texCoord;
+    glm::vec2 tex_coord;
     glm::vec3 normal;
     glm::vec3 tangent;
+    bool invert_bitangent;
 
     static constexpr VertexAttributeDesc layout[] = {
         {0, 3, GL_FLOAT, 0},
         {1, 2, GL_FLOAT, sizeof(position)},
-        {2, 3, GL_FLOAT, sizeof(position) + sizeof(texCoord)},
-        {3, 3, GL_FLOAT, sizeof(position) + sizeof(texCoord) + sizeof(normal)}
+        {2, 3, GL_FLOAT, sizeof(position) + sizeof(tex_coord)},
+        {3, 3, GL_FLOAT, sizeof(position) + sizeof(tex_coord) + sizeof(normal)},
+        {4, 1, GL_FLOAT, sizeof(position) + sizeof(tex_coord) + sizeof(normal) + sizeof(tangent)}
     };
 };
 
