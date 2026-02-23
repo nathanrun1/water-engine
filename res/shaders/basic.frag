@@ -62,7 +62,7 @@ float D_GGXTR(float roughness, float NdotH) {
     denom = denom * (a2 - 1) + 1;
     denom = denom * denom * PI;
     
-    return a2 / EPS, denom;
+    return a2 / max(EPS, denom);
 }
 
 // Schlick GGX Geometry function
@@ -122,9 +122,8 @@ vec3 radiance(Light light) {
     vec3 specular = nom / denom;
     
     vec3 diffuse = ((1 - metallic) * (1 - F)) / PI;
-    diffuse *= albedo;
     
-    return NdotL * (diffuse + specular) * irradiance;
+    return NdotL * (diffuse + specular) * albedo * irradiance;
 }
 
 void main() {
