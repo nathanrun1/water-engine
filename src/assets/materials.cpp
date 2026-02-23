@@ -14,7 +14,7 @@ namespace Assets {
      */
     void _validate_map_dimensions(const MaterialInfo& material_info) {
         for (const Texture2D& map : {material_info.albedo_map, material_info.roughness_map, material_info.metallic_map, material_info.normal_map}) {
-            if (!map.same_dimensions(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, MATERIAL_MAP_N_CHANNELS))
+            if (!map.same_dimensions(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT))
                 throw material_error("Material map dimension mismatch!");
         }
     }

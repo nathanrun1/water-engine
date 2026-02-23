@@ -19,12 +19,11 @@ namespace Assets {
 
         [[nodiscard]] bool same_dimensions(const Texture2D& other) const {
             return width == other.width
-                && height == other.height
-                && n_channels == other.n_channels;
+                && height == other.height;
         }
         
-        [[nodiscard]] bool same_dimensions(const unsigned int width, const unsigned int height, const unsigned int n_channels) const {
-            return this->width == width && this->height == height && this->n_channels == n_channels;
+        [[nodiscard]] bool same_dimensions(const unsigned int width, const unsigned int height) const {
+            return this->width == width && this->height == height;
         }
 
         [[nodiscard]] size_t size() const {

@@ -7,9 +7,8 @@
 #include "material_flags.h"
 
 namespace Assets {
-    constexpr unsigned int MATERIAL_MAP_WIDTH = 512;
+    constexpr unsigned int MATERIAL_MAP_WIDTH = /*512*/ 1024;
     constexpr unsigned int MATERIAL_MAP_HEIGHT = 512;
-    constexpr unsigned int MATERIAL_MAP_N_CHANNELS = 3;
     
     class material_error : public std::runtime_error {
     public:
@@ -29,10 +28,10 @@ namespace Assets {
         MaterialFlag flags;
     };
     struct MaterialInfo {
-        Texture2D albedo_map = white_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, MATERIAL_MAP_N_CHANNELS);
-        Texture2D roughness_map = white_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, MATERIAL_MAP_N_CHANNELS);
-        Texture2D metallic_map = white_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, MATERIAL_MAP_N_CHANNELS);
-        Texture2D normal_map = black_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, MATERIAL_MAP_N_CHANNELS);
+        Texture2D albedo_map = white_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, 4);
+        Texture2D roughness_map = white_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, 4);
+        Texture2D metallic_map = white_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, 4);
+        Texture2D normal_map = black_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, 4);
         
         glm::vec3 albedo_scale = {1.0, 1.0, 1.0};
         float roughness_scale = 1.0;
