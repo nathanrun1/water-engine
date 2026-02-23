@@ -10,19 +10,19 @@ namespace Assets {
         unsigned int id;
     };
 
-    /* Creates the mesh from the given vertices and indices */
+    /** Creates the mesh from the given vertices and indices */
     Mesh create_mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 
-    /* Retrieve a reference to the given mesh's vertices */
+    /** Retrieve a reference to the given mesh's vertices */
     std::span<const Vertex> get_mesh_vertices(const Mesh& mesh);
 
-    /* Retrieve a reference to the given mesh's vertex buffer indices */
+    /** Retrieve a reference to the given mesh's vertex buffer indices */
     std::span<const unsigned int> get_mesh_indices(const Mesh& mesh);
 
-    /* Retrieve a reference to the entire span of all mesh vertices */
+    /** Retrieve a reference to the entire span of all mesh vertices */
     std::span<const Vertex> get_all_mesh_vertices();
 
-    /* Retrieve a reference to the entire span of all mesh indices */
+    /** Retrieve a reference to the entire span of all mesh indices */
     std::span<const unsigned int> get_all_mesh_indices();
 }
 

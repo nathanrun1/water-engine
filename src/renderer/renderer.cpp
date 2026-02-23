@@ -110,7 +110,7 @@ namespace Renderer {
         for (size_t mat = 0; mat < material_maps.size(); ++mat) {
             const std::byte* data = Assets::get_texture_data(material_maps[mat]).data();
             glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, mat, width, height, 1,
-                format, GL_UNSIGNED_BYTE, data);
+                _texture_format(material_maps[mat].n_channels), GL_UNSIGNED_BYTE, data);
         }
 
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);  // Set mirrored wrapping
@@ -129,7 +129,6 @@ namespace Renderer {
         UBLighting lighting_block;
         std::span<const World::Light> lights = World::get_all_lights();
         for (int i = 0; i < lights.size(); ++i) {
-            std::cout << "loading light " << i << '\n';
             lighting_block.lights[i] = UBLight(lights[i]);
         }
         lighting_block.num_lights = lights.size();

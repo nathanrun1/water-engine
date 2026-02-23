@@ -13,14 +13,14 @@ public:
 
 // TODO: do same with textures as was done with meshes (batching)
 
-/* An 8-bit depth texture, loaded from a given image */
+/** An 8-bit depth texture, loaded from a given image */
 struct Texture2D {
     Texture2D(const std::string& texturePath, const unsigned int textureUnit = 0);
 
-    /* Binds this texture to the given texture unit */
+    /** Binds this texture to the given texture unit */
     void bind(const unsigned int unit);
 
-    /* Retrieve the texture unit that this texture is bound to */
+    /** Retrieve the texture unit that this texture is bound to */
     unsigned int getUnit();
 private:
     unsigned int m_id;
