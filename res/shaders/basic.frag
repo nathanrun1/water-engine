@@ -10,7 +10,8 @@
 #define MAX_LIGHTS 8
 
 #define PI 3.1415926535897932384626433832795
-const float EPS = 0.0001;
+#define EPS 0.0001
+#define MAX_NDF 64.0
 
 struct Light {
     vec3 position;
@@ -66,10 +67,10 @@ float D_GGXTR(float roughness, float NdotH) {
     float a = roughness * roughness;
     float a2 = a * a;
     float denom = NdotH * NdotH;
-    denom = denom * (a2 - 1) + 1;
+    denom = denom * (a2 - 1.0) + 1.0;
     denom = denom * denom * PI;
-    
-    return a2 / max(EPS, denom);
+
+    return min(MAX_NDF, a2 / max(EPS, denom));
 }
 
 // Schlick GGX Geometry function
@@ -144,5 +145,6 @@ void main() {
     for (uint i = 0; i < num_lights; ++i) {
         total_irradiance += radiance(lights[i]);
     }
-    fragColor = vec4(total_irradiance, 1.0);
+    //fragColor = vec4(total_irradiance, 1.0);
+    fragColor = vec4(get_normal(), 1.0);
 }
