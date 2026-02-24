@@ -21,24 +21,39 @@ glm::mat2x3 _tangent_basis(const Vertex& v1, const Vertex& v2, const Vertex& v3)
     
     glm::mat2 delta_uv(delta_uv1, delta_uv2);
     glm::mat2x3 edges(edge1, edge2);
-    
+
+
+    glm::mat2 inv = glm::inverse(delta_uv);
+
     // [E1, E2]^T = [DUV1, DUV2]^T * [T, B]^T
     // -> [T, B]^T = [DUV1, DUV2]^T^-1 * [E1, E2]^T
     // That is, [T, B] transforms from tangent space to world space.
-    return glm::transpose(edges * glm::inverse(delta_uv));
+    glm::mat2x3 TB = edges * glm::inverse(delta_uv);
+    std::cout << "Calculating tangent space for: " << v1.position << ", " << v2.position << ", " << v3.position << '\n';
+    std::cout << "\t" << TB << std::endl;
+    return TB;
+}
+
+/**
+ * Determines the handedness of the given tangent basis and normal, returning the sign that T x N should be multiplied
+ * by to retrieve the bitangent
+ */
+float _get_bitangent_sign(const glm::mat2x3& tangent_basis, const glm::vec3& normal) {
+    return glm::dot(glm::cross(tangent_basis[0], normal), tangent_basis[1]) > 0.0 ? 1.0 : -1.0;
 }
 
 /** 
  * Updates the vertex's tangent (and invert_bitangent attribute) based on total amount of tangents calculated and most newly calculated tangent.
+ * Uses the .w component of the newly calculated tangent.
  * 
  * @details accounts for shared vertices between triangles, interpolating the tangent calculations from each one.
  */
-void _update_tangent(Vertex& v, unsigned int num_tangents, const glm::vec3& tangent) {
+void _update_tangent(Vertex& v, unsigned int num_tangents, const glm::vec4& tangent) {
     if (num_tangents == 1) {
         v.tangent = tangent;
         return;
     }
-    v.tangent = glm::normalize(static_cast<float>(num_tangents) * v.tangent + tangent);
+    v.tangent = glm::vec4(glm::normalize(static_cast<float>(num_tangents) * xyz(v.tangent) + xyz(tangent)), tangent.w);
 }
 
 void calculate_tangents(const std::span<Vertex>& vertices, const std::span<unsigned int>& indices) {
@@ -46,14 +61,16 @@ void calculate_tangents(const std::span<Vertex>& vertices, const std::span<unsig
     // if >0, then do incremental average for that vertex's tangent
     std::unordered_map<unsigned int, size_t> tangents_calculated{};
     for (int i = 0; i < indices.size(); i += 3) {
-        glm::vec3 tangent = _tangent_basis(
+        glm::mat2x3 basis = _tangent_basis(
             vertices[indices[i]],
             vertices[indices[i+1]],
             vertices[indices[i+2]]
-        )[0];
+        );
         for (int j = i; j < i + 3; ++j) {
             Vertex& v = vertices[indices[j]];
             unsigned int num_tangents = ++tangents_calculated[indices[j]];
+            glm::vec4 tangent = glm::vec4(basis[0], _get_bitangent_sign(basis, v.normal));  // w component contains handedness sign
+            std::cout << tangent << std::endl;
             _update_tangent(v, num_tangents, tangent);
         }
     }

@@ -140,7 +140,7 @@ int main() {
     Assets::Material stones_material = Assets::create_material(material_info_paving_stones);
 
     // Lights
-    glm::vec3 light_pos = glm::vec3{3.0f, 5.0f, 5.0f};
+    glm::vec3 light_pos = glm::vec3{3.0f, 5.0f, 0.0f};
     World::add_light(World::Light{
         light_pos,
         World::LightType::Point,
