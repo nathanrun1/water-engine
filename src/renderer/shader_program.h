@@ -22,7 +22,7 @@ struct ShaderProgramInfo {
 /** Encapulates an OpenGL shader program */
 class ShaderProgram {
 public:
-    ShaderProgram(const ShaderProgramInfo& info);
+    explicit ShaderProgram(const ShaderProgramInfo& info);
 
     /** Set this as the active shader program */
     void use() const;

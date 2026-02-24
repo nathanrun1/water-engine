@@ -19,7 +19,7 @@ std::string parseShader(const std::string &filepath) {
     return buffer.str();
 }
 
-ShaderProgram::ShaderProgram(const ShaderProgramInfo &info) {
+ShaderProgram::ShaderProgram(const ShaderProgramInfo& info) {
     const std::string vertex_src = parseShader(info.vertexPath);
     const std::string fragment_src = parseShader(info.fragmentPath);
     const char* c_str;

@@ -146,7 +146,7 @@ void main() {
     }
     //fragColor = vec4(total_irradiance, 1.0);
     fragColor = vec4(get_normal(), 1.0);
-    fragColor = vec4(normalize(cross(normal, tangent.xyz)) * tangent.w, 1.0);
-    fragColor = vec4(texture(uMaterialMapArray, vec3(texCoord, uMaterial.normalId)).rgb, 1.0);
+    //fragColor = vec4(normalize(cross(normal, tangent.xyz)) * tangent.w, 1.0);
+    //fragColor = vec4(texture(uMaterialMapArray, vec3(texCoord, uMaterial.normalId)).rgb, 1.0);
     //fragColor = vec4(tangent.w);
 }
