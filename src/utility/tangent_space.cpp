@@ -39,7 +39,11 @@ glm::mat2x3 _tangent_basis(const Vertex& v1, const Vertex& v2, const Vertex& v3)
  * by to retrieve the bitangent
  */
 float _get_bitangent_sign(const glm::mat2x3& tangent_basis, const glm::vec3& normal) {
-    return glm::dot(glm::cross(tangent_basis[0], normal), tangent_basis[1]) > 0.0 ? 1.0 : -1.0;
+
+    float result = glm::dot(glm::cross(tangent_basis[0], normal), tangent_basis[1]) > 0.0 ? 1.0 : -1.0;
+    glm::vec3 cross = glm::cross(tangent_basis[0], normal);
+    std::cout << "Sign with basis " << tangent_basis << " and normal " << normal << "?:\n" << result << std::endl;
+    return result;
 }
 
 /** 

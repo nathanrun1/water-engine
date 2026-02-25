@@ -55,8 +55,9 @@ vec3 get_albedo() {
 }
 
 vec3 get_normal() {
-    vec3 bitangent = normalize(cross(normal, tangent.xyz)) * tangent.w;
+    vec3 bitangent = normalize(cross(tangent.xyz, normal)) * tangent.w;
     vec3 normal_comp = texture(uMaterialMapArray, vec3(texCoord, uMaterial.normalId)).rgb;
+    normal_comp.rg = normal_comp.rg * 2.0 - 1.0;
     return normalize(normal_comp.r * tangent.xyz + normal_comp.g * bitangent + normal_comp.b * normal);
 }
 
@@ -144,9 +145,9 @@ void main() {
     for (uint i = 0; i < num_lights; ++i) {
         total_irradiance += radiance(lights[i]);
     }
-    //fragColor = vec4(total_irradiance, 1.0);
-    fragColor = vec4(get_normal(), 1.0);
-    //fragColor = vec4(normalize(cross(normal, tangent.xyz)) * tangent.w, 1.0);
+    fragColor = vec4(total_irradiance, 1.0);
+    //fragColor = vec4(get_normal(), 1.0);
+    //fragColor = vec4(normalize(cross(normal, tangent.xyz)) /** tangent.w*/ * 0.5f + 0.5f, 1.0);
     //fragColor = vec4(texture(uMaterialMapArray, vec3(texCoord, uMaterial.normalId)).rgb, 1.0);
     //fragColor = vec4(tangent.w);
 }
