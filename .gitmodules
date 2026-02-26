@@ -10,3 +10,6 @@
 [submodule "deps/imgui"]
 	path = deps/imgui
 	url = git@github.com:ocornut/imgui.git
+[submodule "deps/simpleini"]
+	path = deps/simpleini
+	url = git@github.com:brofield/simpleini.git
