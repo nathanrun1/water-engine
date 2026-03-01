@@ -4,6 +4,7 @@ project(waterengine)
 set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(deps/glfw)
+add_subdirectory(deps/simpleini)
 
 file(GLOB_RECURSE LOCAL_SRC CONFIGURE_DEPENDS
         src/assets/meshes.cpp
@@ -50,8 +51,10 @@ add_executable(waterengine
         src/utility/bitmask.h
         src/utility/tangent_space.h
         src/utility/tangent_space.cpp
+        src/utility/config/config.h
+        src/utility/config/config.cpp
 )
 
-target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb deps/spdlog/include deps/imgui)
-target_link_libraries(waterengine glfw ${GLFW_LIBRARIES})
+target_include_directories(waterengine PUBLIC src deps/glfw/include deps/glad/include deps/glm deps/stb deps/spdlog/include deps/imgui deps/simpleini)
+target_link_libraries(waterengine glfw ${GLFW_LIBRARIES} SimpleIni::SimpleIni)
 set_target_properties(waterengine PROPERTIES DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

@@ -56,11 +56,25 @@ vec3 get_albedo() {
     return texture(uMaterialMapArray, vec3(texCoord, uMaterial.albedoId)).rgb * uMaterial.albedoScale;
 }
 
-vec3 get_normal() {
-    vec3 bitangent = normalize(cross(tangent.xyz, normal)) * tangent.w;
+float get_displacement() {
+    return texture(uMaterialMapArray, vec3(texCoord, uMaterial.displacementId)).r * uMaterial.displacementScale;
+}
+
+vec3 get_bitangent() {
+    return normalize(cross(tangent.xyz, normal)) * tangent.w;
+}
+
+vec3 get_normal(vec3 bitangent) {
     vec3 normal_comp = texture(uMaterialMapArray, vec3(texCoord, uMaterial.normalId)).rgb;
     normal_comp.rg = normal_comp.rg * 2.0 - 1.0;
     return normalize(normal_comp.r * tangent.xyz + normal_comp.g * bitangent + normal_comp.b * normal);
+}
+
+vec2 get_texcoord_parallax(vec3 view_dir, vec3 normal, vec3 bitangent) {
+    mat3 world_to_tangent = inverse(mat3(tangent.xyz, bitangent, normal));
+    // p_adj = p + (v.xy * h) / v.z
+    // Basically, if the surface was elevated by the height at p ('texCoord'), where would the view direction intersect with the surface (p_adj)
+    return texCoord + ((world_to_tangent * view_dir).xy * get_displacement() * (1.0 / view_dir.z));
 }
 
 // TRGGX NDF
@@ -109,13 +123,16 @@ vec3 radiance(Light light) {
     if (light.type == LTYPE_AMBIENT) {
         return light.intensity * light.color * albedo;
     }
-    vec3 normal = get_normal();
-    float metallic = texture(uMaterialMapArray, vec3(texCoord, uMaterial.metallicId)).r * uMaterial.metallicScale;
-    float roughness = texture(uMaterialMapArray, vec3(texCoord, uMaterial.roughnessId)).r * uMaterial.roughnessScale;
-
+    vec3 bitangent = get_bitangent();
+    vec3 normal = get_normal(bitangent);
     vec3 view_dir = normalize(uCameraPos - fragPos);
     vec3 light_dir = light.type == LTYPE_DIRECTIONAL ? light.position : light.position - fragPos;
     light_dir = normalize(light_dir);
+    vec2 texCoord = get_texcoord_parallax(view_dir, normal, bitangent);
+
+    float metallic = texture(uMaterialMapArray, vec3(texCoord, uMaterial.metallicId)).r * uMaterial.metallicScale;
+    float roughness = texture(uMaterialMapArray, vec3(texCoord, uMaterial.roughnessId)).r * uMaterial.roughnessScale;
+
     vec3 irradiance = light.intensity * light.color;
 
     // Cook-Torrance specular
@@ -131,9 +148,9 @@ vec3 radiance(Light light) {
     vec3 nom = D * G * F;
     float denom = 4 * NdotV * NdotL;
     vec3 specular = nom / denom;
-    
+
     vec3 diffuse = ((1 - metallic) * (1 - F)) / PI;
-    
+
     return NdotL * (diffuse + specular) * albedo * irradiance;
 }
 

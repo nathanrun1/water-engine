@@ -9,6 +9,7 @@
 #include "backend/glfw_input.h"
 #include "input/enums.h"
 #include "utility/tangent_space.h"
+#include "utility/config/config.h"
 #include "world/lighting.h"
 #include "world/transform.h"
 #include "world/update_registry.h"
@@ -102,9 +103,9 @@ void key_callback(Key key, Action action) {
     }
     if (key == Key::R && action == Action::Press) {
         hot_reload({
-        "res/shaders/basic.vert",
-        "res/shaders/basic.frag"
-        });
+        Config::get_value(Config::ConfigGroup::Shaders, "shaders", "vert"),
+        Config::get_value(Config::ConfigGroup::Shaders, "shaders", "frag")
+    });
     }
 }
 
@@ -150,6 +151,8 @@ int main() {
     material_info_paving_stones.albedo_map = Assets::create_texture2d("res/textures/paving_stones/albedo.jpg");
     material_info_paving_stones.roughness_map = Assets::create_texture2d("res/textures/paving_stones/roughness.jpg");
     material_info_paving_stones.normal_map = Assets::create_texture2d("res/textures/paving_stones/normal_gl.jpg");
+    material_info_paving_stones.displacement_map = Assets::create_texture2d("res/textures/paving_stones/displacement.jpg");
+    material_info_paving_stones.displacement_scale = 5.0f;
     Assets::Material stones_material = Assets::create_material(material_info_paving_stones);
 
     // Lights
@@ -169,8 +172,8 @@ int main() {
 
     // Shaders
     ShaderProgramInfo sp_info{
-        "res/shaders/basic.vert",
-        "res/shaders/basic.frag"
+        Config::get_value(Config::ConfigGroup::Shaders, "shaders", "vert"),
+        Config::get_value(Config::ConfigGroup::Shaders, "shaders", "frag")
     };
     Renderer::create_program("basic", sp_info);
 
