@@ -33,10 +33,12 @@ namespace Renderer {
         alignas(4)  unsigned int roughness_id;
         alignas(4)  unsigned int metallic_id;
         alignas(4)  unsigned int normal_id;
+        alignas(4)  unsigned int displacement_id;
         
         alignas(16) glm::vec3 albedo_scale;
         alignas(4)  float roughness_scale;
         alignas(4)  float metallic_scale;
+        alignas(4)  float displacement_scale;
 
         alignas(4)  unsigned int flags;
         
@@ -47,9 +49,11 @@ namespace Renderer {
             , roughness_id{material.roughness_id}
             , metallic_id{material.metallic_id}
             , normal_id{material.normal_id}
+            , displacement_id{material.displacement_id}
             , albedo_scale{material.albedo_scale}
             , roughness_scale{material.roughness_scale}
             , metallic_scale{material.metallic_scale}
+            , displacement_scale{material.displacement_scale}
             , flags{static_cast<unsigned int>(material.flags)}
         {}
     };

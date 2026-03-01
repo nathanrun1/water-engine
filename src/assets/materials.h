@@ -20,10 +20,12 @@ namespace Assets {
         unsigned int roughness_id;
         unsigned int metallic_id;
         unsigned int normal_id;
+        unsigned int displacement_id;
         
         glm::vec3 albedo_scale;
         float roughness_scale;
         float metallic_scale;
+        float displacement_scale;
 
         MaterialFlag flags;
     };
@@ -32,10 +34,12 @@ namespace Assets {
         Texture2D roughness_map = white_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, 4);
         Texture2D metallic_map = white_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, 4);
         Texture2D normal_map = black_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, 4);
+        Texture2D displacement_map = white_texture2d(MATERIAL_MAP_WIDTH, MATERIAL_MAP_HEIGHT, 4);
         
         glm::vec3 albedo_scale = {1.0, 1.0, 1.0};
         float roughness_scale = 1.0;
         float metallic_scale = 0.0;
+        float displacement_scale = 1.0;
 
         MaterialFlag flags = MaterialFlag::None;
     };

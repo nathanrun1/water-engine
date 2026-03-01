@@ -8,8 +8,9 @@ namespace Assets {
     std::vector<Texture2D> g_maps;
     /* Maps material map (Texture2D) id to its index in the map array, if it has been used in material creation. */
     std::unordered_map<unsigned int, unsigned int> g_map_loc;
-    
-    /* Validates maps given for the creation of a material. Throws a material_error if any of the maps do not match
+
+    /**
+     * Validates maps given for the creation of a material. Throws a material_error if any of the maps do not match
      * the dimensions of already-uploaded maps.
      */
     void _validate_map_dimensions(const MaterialInfo& material_info) {
@@ -29,7 +30,8 @@ namespace Assets {
         g_map_loc[material_map.id] = loc;
         return loc;
     }
-    
+
+    // TODO: probably refactor this, gotta change a whole bunch when adding material properties
     Material create_material(const MaterialInfo& material_info) {
         _validate_map_dimensions(material_info);
         return Material{
@@ -37,9 +39,11 @@ namespace Assets {
             _save_map(material_info.roughness_map),
             _save_map(material_info.metallic_map),
             _save_map(material_info.normal_map),
+            _save_map(material_info.displacement_map),
             material_info.albedo_scale,
             material_info.roughness_scale,
             material_info.metallic_scale,
+            material_info.displacement_scale,
             material_info.flags
         };
     }
