@@ -20,6 +20,7 @@ The overall goal is to learn as much as possible. lesgo
 <video width="320" height="240" controls>
   <source src="./showcase/parallax.mp4" type="video/mp4">
 </video>
+
 ## 02-25-2026
 - Just got normal mapping working fully
 - Next is either parallax mapping or IBL
