@@ -17,9 +17,7 @@ The overall goal is to learn as much as possible. lesgo
 - Got parallax mapping supposedly working, though it's difficult to tell
 - Next is POM (Parallax Occlusion Mapping, uses raymarching)
 
-<video width="320" height="240" controls>
-  <source src="./showcase/parallax.mp4" type="video/mp4">
-</video>
+https://github.com/user-attachments/assets/030e10a9-6f3d-42c9-b2c7-9b88df5e5bbf
 
 ## 02-25-2026
 - Just got normal mapping working fully
