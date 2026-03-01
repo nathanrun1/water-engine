@@ -13,6 +13,13 @@ It will be built off of the water shading logic I wrote [here](https://www.poshb
 The overall goal is to learn as much as possible. lesgo
 
 # Showcase
+## 02-26-2026
+- Got parallax mapping supposedly working, though it's difficult to tell
+- Next is POM (Parallax Occlusion Mapping, uses raymarching)
+
+<video width="320" height="240" controls>
+  <source src="./showcase/parallax.mp4" type="video/mp4">
+</video>
 ## 02-25-2026
 - Just got normal mapping working fully
 - Next is either parallax mapping or IBL
