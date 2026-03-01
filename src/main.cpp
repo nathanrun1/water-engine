@@ -89,9 +89,22 @@ glm::vec3 cubePositions[] = {
     glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
+/** Re-initializes the renderer with the given shader program */
+void hot_reload(const ShaderProgramInfo& sp_info) {
+    std::cout << "Reloading..." << std::endl;
+    Renderer::create_program("hot", sp_info);
+    Renderer::init("hot");
+}
+
 void key_callback(Key key, Action action) {
     if (key == Key::Escape && action == Action::Press) {
         Input::set_cursor_mode(CursorMode::GUI);
+    }
+    if (key == Key::R && action == Action::Press) {
+        hot_reload({
+        "res/shaders/basic.vert",
+        "res/shaders/basic.frag"
+        });
     }
 }
 
@@ -140,7 +153,7 @@ int main() {
     Assets::Material stones_material = Assets::create_material(material_info_paving_stones);
 
     // Lights
-    glm::vec3 light_pos = glm::vec3{3.0f, 5.0f, 5.0f};
+    glm::vec3 light_pos = glm::vec3{3.0f, 5.0f, 0.0f};
     World::add_light(World::Light{
         light_pos,
         World::LightType::Point,
@@ -154,8 +167,15 @@ int main() {
         0.1f
     });
 
+    // Shaders
+    ShaderProgramInfo sp_info{
+        "res/shaders/basic.vert",
+        "res/shaders/basic.frag"
+    };
+    Renderer::create_program("basic", sp_info);
+
     World::init();
-    Renderer::init();
+    Renderer::init("basic");
     
     while (!GLFW::window_should_close()) {
         Renderer::begin_draw();

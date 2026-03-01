@@ -1,7 +1,7 @@
 ﻿#include "renderer.h"
 
-#include <iostream>
 #define GLM_ENABLE_EXPERIMENTAL
+#include <iostream>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/io.hpp>
 
@@ -18,8 +18,8 @@
 // Single buffer for all models
 
 namespace Renderer {
-    std::map<std::string, ShaderProgram> g_availablePrograms;
-    ShaderProgram* g_activeProgram;
+    std::unordered_map<std::string, ShaderProgram> g_availablePrograms;
+    ShaderProgram* g_activeProgram = nullptr;
     unsigned int g_meshVAO;
     unsigned int g_meshVBO;
     unsigned int g_meshEBO;
@@ -153,15 +153,10 @@ namespace Renderer {
     }
 
 
-    void init() {
-        GLFW::add_frame_buffer_size_callback(_frame_buffer_size_callback);
+    void init(const std::string& program_id) {
+        use_program(program_id);
 
-        ShaderProgramInfo spInfo{
-            "res/shaders/basic.vert",
-            "res/shaders/basic.frag"
-        };
-        create_program("basic", spInfo);
-        use_program("basic");
+        GLFW::add_frame_buffer_size_callback(_frame_buffer_size_callback);
 
         _init_model_buffers();
         _load_models();
@@ -196,17 +191,17 @@ namespace Renderer {
         glDrawElements(GL_TRIANGLES, modelIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<void *>(indicesOffset));
     }
 
-    void create_program(const std::string &programId, const ShaderProgramInfo &programInfo) {
-        g_availablePrograms.emplace(programId, ShaderProgram(programInfo));
+    void create_program(const std::string &program_id, const ShaderProgramInfo &program_info) {
+        g_availablePrograms.insert_or_assign(program_id, std::move(ShaderProgram{program_info}));
     }
 
-    void use_program(const std::string &programId) {
+    void use_program(const std::string &program_id) {
         try {
-            ShaderProgram& program = g_availablePrograms.at(programId);
+            ShaderProgram& program = g_availablePrograms.at(program_id);
             program.use();
             g_activeProgram = &program;
         } catch (std::out_of_range&) {
-            throw std::runtime_error("No shader program of id: " + programId);
+            throw std::runtime_error("No shader program of id: " + program_id);
         }
     }
 }

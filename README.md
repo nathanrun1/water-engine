@@ -11,3 +11,10 @@ Additionally, I'm looking to add rendering techniques like:
 It will be built off of the water shading logic I wrote [here](https://www.poshbrolly.net/shader/l0Ty1LFCvmCia8MqWn7C), but improved.
 
 The overall goal is to learn as much as possible. lesgo
+
+# Showcase
+## 02-25-2026
+- Just got normal mapping working fully
+- Next is either parallax mapping or IBL
+![stones](./showcase/stones.png)
+![overhead_bump](./showcase/overhead_bump.png)

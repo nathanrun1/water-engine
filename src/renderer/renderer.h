@@ -9,8 +9,8 @@
 #include "world/transform.h"
 
 namespace Renderer {
-    /** Initializes renderer */
-    void init();
+    /** Initializes renderer with given shader program */
+    void init(const std::string& program_id);
 
     /** Starts the frame draw */
     void begin_draw();
@@ -19,10 +19,10 @@ namespace Renderer {
     void draw_mesh(const Assets::Mesh& mesh, const Transform& transform, const Assets::Material& material);
 
     /** Creates shader program from given shaders and adds it to available program list */
-    void create_program(const std::string& programId, const ShaderProgramInfo &programInfo);
+    void create_program(const std::string& program_id, const ShaderProgramInfo &program_info);
 
     /** Uses the shader program with the given id */
-    void use_program(const std::string& programId);
+    void use_program(const std::string& program_id);
 }
 
 #endif //WATERENGINE_RENDERER_H

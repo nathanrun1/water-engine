@@ -45,7 +45,7 @@ uniform vec3 uCameraPos;
 
 in vec2 texCoord;
 in vec3 normal;
-in vec3 tangent;
+in vec4 tangent;
 in vec3 fragPos;
 
 out vec4 fragColor;
@@ -55,9 +55,10 @@ vec3 get_albedo() {
 }
 
 vec3 get_normal() {
-    vec3 bitangent = normalize(cross(normal, tangent));
+    vec3 bitangent = normalize(cross(tangent.xyz, normal)) * tangent.w;
     vec3 normal_comp = texture(uMaterialMapArray, vec3(texCoord, uMaterial.normalId)).rgb;
-    return normalize(normal_comp.r * tangent + normal_comp.g * bitangent + normal_comp.b * normal);
+    normal_comp.rg = normal_comp.rg * 2.0 - 1.0;
+    return normalize(normal_comp.r * tangent.xyz + normal_comp.g * bitangent + normal_comp.b * normal);
 }
 
 // TRGGX NDF
@@ -102,23 +103,22 @@ vec3 F_Schlick(vec3 half_dir, vec3 view_dir, vec3 albedo, float metallic) {
 
 vec3 radiance(Light light) {
     vec3 albedo = get_albedo();
-    vec3 normal = get_normal();
 
     if (light.type == LTYPE_AMBIENT) {
         return light.intensity * light.color * albedo;
     }
-    
-    // TODO: calculate normal with normal map, tangent space
+    vec3 normal = get_normal();
+    float metallic = texture(uMaterialMapArray, vec3(texCoord, uMaterial.metallicId)).r * uMaterial.metallicScale;
+    float roughness = texture(uMaterialMapArray, vec3(texCoord, uMaterial.roughnessId)).r * uMaterial.roughnessScale;
+
     vec3 view_dir = normalize(uCameraPos - fragPos);
     vec3 light_dir = light.type == LTYPE_DIRECTIONAL ? light.position : light.position - fragPos;
     light_dir = normalize(light_dir);
     vec3 irradiance = light.intensity * light.color;
-    float metallic = texture(uMaterialMapArray, vec3(texCoord, uMaterial.metallicId)).r * uMaterial.metallicScale;
-    
+
     // Cook-Torrance specular
     // Retrieved from: https://learnopengl.com/PBR/Theory#:~:text=Cook%2DTorrance%20specular%20BRDF
     vec3 half_dir = normalize(light_dir + view_dir);
-    float roughness = texture(uMaterialMapArray, vec3(texCoord, uMaterial.roughnessId)).r * uMaterial.roughnessScale;
     float NdotL = max(EPS, dot(normal, light_dir));
     float NdotV = max(EPS, dot(normal, view_dir));
     float NdotH = max(EPS, dot(normal, half_dir));
@@ -145,6 +145,9 @@ void main() {
     for (uint i = 0; i < num_lights; ++i) {
         total_irradiance += radiance(lights[i]);
     }
-    //fragColor = vec4(total_irradiance, 1.0);
-    fragColor = vec4(get_normal(), 1.0);
+    fragColor = vec4(total_irradiance, 1.0);
+    //fragColor = vec4(get_normal(), 1.0);
+    //fragColor = vec4(normalize(cross(normal, tangent.xyz)) /** tangent.w*/ * 0.5f + 0.5f, 1.0);
+    //fragColor = vec4(texture(uMaterialMapArray, vec3(texCoord, uMaterial.normalId)).rgb, 1.0);
+    //fragColor = vec4(tangent.w);
 }
