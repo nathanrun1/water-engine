@@ -16,6 +16,7 @@ The overall goal is to learn as much as possible. lesgo
 ## 03-09-2026
 - Parallax mapping was not working previously, several bugs in shader relating to displacement calculation that are now fixed.
 - Working now, but current method insufficient for the high-frequency paving stones texture, shown below. Will need POM
+Note the texture swimming at sharp angles:
 <img width="1120" height="363" alt="image" src="https://github.com/user-attachments/assets/de900ba2-4069-4949-8e93-8675ef0b935a" />
 
 ## 02-26-2026
@@ -23,8 +24,6 @@ The overall goal is to learn as much as possible. lesgo
 - Switched to parallax mapping with offset limiting
 - Next is POM (Parallax Occlusion Mapping, uses raymarching)
 <img width="827" height="770" alt="image" src="https://github.com/user-attachments/assets/6b09b312-0221-4a61-b159-a269f84c2be7" />
-Note the texture swimming at sharp angles:
-https://github.com/user-attachments/assets/030e10a9-6f3d-42c9-b2c7-9b88df5e5bbf
 
 ## 02-25-2026
 - Just got normal mapping working fully
