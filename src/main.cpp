@@ -152,7 +152,7 @@ int main() {
     material_info_paving_stones.roughness_map = Assets::create_texture2d("res/textures/paving_stones/roughness.jpg");
     material_info_paving_stones.normal_map = Assets::create_texture2d("res/textures/paving_stones/normal_gl.jpg");
     material_info_paving_stones.displacement_map = Assets::create_texture2d("res/textures/paving_stones/displacement.jpg");
-    material_info_paving_stones.displacement_scale = 5.0f;
+    material_info_paving_stones.displacement_scale = 0.02f;
     Assets::Material stones_material = Assets::create_material(material_info_paving_stones);
 
     // Lights

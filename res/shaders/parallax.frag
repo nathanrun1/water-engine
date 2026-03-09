@@ -45,36 +45,37 @@ layout (binding = 0) uniform sampler2DArray uMaterialMapArray;
 uniform vec3 uCameraPos;
 
 
-in vec2 texCoord;
-in vec3 normal;
-in vec4 tangent;
-in vec3 fragPos;
+in vec2 fTexCoord;
+in vec3 fNormal;
+in vec4 fTangent;
+in vec3 fPos;
 
 out vec4 fragColor;
 
-vec3 get_albedo() {
+vec3 get_albedo(vec2 texCoord) {
     return texture(uMaterialMapArray, vec3(texCoord, uMaterial.albedoId)).rgb * uMaterial.albedoScale;
 }
 
 float get_displacement() {
-    return texture(uMaterialMapArray, vec3(texCoord, uMaterial.displacementId)).r * uMaterial.displacementScale;
+    return texture(uMaterialMapArray, vec3(fTexCoord, uMaterial.displacementId)).r * uMaterial.displacementScale;
 }
 
 vec3 get_bitangent() {
-    return normalize(cross(tangent.xyz, normal)) * tangent.w;
+    return normalize(cross(fTangent.xyz, fNormal)) * fTangent.w;
 }
 
-vec3 get_normal(vec3 bitangent) {
+vec3 get_lighting_normal(vec3 bitangent, vec2 texCoord) {
     vec3 normal_comp = texture(uMaterialMapArray, vec3(texCoord, uMaterial.normalId)).rgb;
     normal_comp.rg = normal_comp.rg * 2.0 - 1.0;
-    return normalize(normal_comp.r * tangent.xyz + normal_comp.g * bitangent + normal_comp.b * normal);
+    return normalize(normal_comp.r * fTangent.xyz + normal_comp.g * bitangent + normal_comp.b * fNormal);
 }
 
-vec2 get_texcoord_parallax(vec3 view_dir, vec3 normal, vec3 bitangent) {
-    mat3 world_to_tangent = inverse(mat3(tangent.xyz, bitangent, normal));
+vec2 get_texcoord_parallax(vec3 view_dir, vec3 bitangent) {
+    mat3 world_to_tangent = transpose(mat3(fTangent.xyz, bitangent, fNormal));
     // p_adj = p + (v.xy * h) / v.z
     // Basically, if the surface was elevated by the height at p ('texCoord'), where would the view direction intersect with the surface (p_adj)
-    return texCoord + ((world_to_tangent * view_dir).xy * get_displacement() * (1.0 / view_dir.z));
+    vec3 v_tangent = world_to_tangent * view_dir;
+    return fTexCoord + (v_tangent.xy * get_displacement());
 }
 
 // TRGGX NDF
@@ -118,17 +119,20 @@ vec3 F_Schlick(vec3 half_dir, vec3 view_dir, vec3 albedo, float metallic) {
 }
 
 vec3 radiance(Light light) {
-    vec3 albedo = get_albedo();
+    vec3 bitangent = get_bitangent();
+    vec3 view_dir = normalize(uCameraPos - fPos);
+    vec2 texCoord = get_texcoord_parallax(view_dir, bitangent);
+    vec3 albedo = get_albedo(texCoord);
 
     if (light.type == LTYPE_AMBIENT) {
         return light.intensity * light.color * albedo;
     }
-    vec3 bitangent = get_bitangent();
-    vec3 normal = get_normal(bitangent);
-    vec3 view_dir = normalize(uCameraPos - fragPos);
-    vec3 light_dir = light.type == LTYPE_DIRECTIONAL ? light.position : light.position - fragPos;
+
+    vec3 lighting_normal = get_lighting_normal(bitangent, texCoord);
+
+    vec3 light_dir = light.type == LTYPE_DIRECTIONAL ? light.position : light.position - fPos;
     light_dir = normalize(light_dir);
-    vec2 texCoord = get_texcoord_parallax(view_dir, normal, bitangent);
+
 
     float metallic = texture(uMaterialMapArray, vec3(texCoord, uMaterial.metallicId)).r * uMaterial.metallicScale;
     float roughness = texture(uMaterialMapArray, vec3(texCoord, uMaterial.roughnessId)).r * uMaterial.roughnessScale;
@@ -138,9 +142,9 @@ vec3 radiance(Light light) {
     // Cook-Torrance specular
     // Retrieved from: https://learnopengl.com/PBR/Theory#:~:text=Cook%2DTorrance%20specular%20BRDF
     vec3 half_dir = normalize(light_dir + view_dir);
-    float NdotL = max(EPS, dot(normal, light_dir));
-    float NdotV = max(EPS, dot(normal, view_dir));
-    float NdotH = max(EPS, dot(normal, half_dir));
+    float NdotL = max(EPS, dot(lighting_normal, light_dir));
+    float NdotV = max(EPS, dot(lighting_normal, view_dir));
+    float NdotH = max(EPS, dot(lighting_normal, half_dir));
 
     float D = D_GGXTR(roughness, NdotH);
     vec3 F = F_Schlick(half_dir, view_dir, albedo, metallic);
@@ -156,7 +160,7 @@ vec3 radiance(Light light) {
 
 void main() {
     if ((uMaterial.flags & MATERIAL_UNLIT) > 0) {
-        fragColor = vec4(get_albedo(), 0.0);
+        fragColor = vec4(get_albedo(fTexCoord), 0.0);
         return;
     }
 
@@ -165,6 +169,11 @@ void main() {
         total_irradiance += radiance(lights[i]);
     }
     fragColor = vec4(total_irradiance, 1.0);
+
+    //fragColor = vec4(get_displacement()) * 100;
+    vec3 bitangent = get_bitangent();
+    vec3 view_dir = normalize(uCameraPos - fPos);
+    //fragColor = vec4(get_texcoord_parallax(view_dir, bitangent) - texCoord, 0.0, 1.0);
     //fragColor = vec4(get_normal(), 1.0);
     //fragColor = vec4(normalize(cross(normal, tangent.xyz)) /** tangent.w*/ * 0.5f + 0.5f, 1.0);
     //fragColor = vec4(texture(uMaterialMapArray, vec3(texCoord, uMaterial.normalId)).rgb, 1.0);
