@@ -15,7 +15,8 @@ The overall goal is to learn as much as possible. lesgo
 # Showcase
 ## 03-09-2026
 - Parallax mapping was not working previously, several bugs in shader relating to displacement calculation that are now fixed.
-- Working now, but current method insufficient for the high-frequency paving stones texture, shown below. Will need POM
+- Working now, but current method insufficient for the high-frequency paving stones texture, shown below. Will need POM.
+
 Note the texture swimming at sharp angles:
 <img width="1120" height="363" alt="image" src="https://github.com/user-attachments/assets/de900ba2-4069-4949-8e93-8675ef0b935a" />
 
